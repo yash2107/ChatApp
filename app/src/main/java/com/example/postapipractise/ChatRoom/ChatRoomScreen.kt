@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
@@ -31,6 +33,18 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel) 
     val ctx = LocalContext.current
     val result = remember {
         mutableStateOf("")
+    }
+    val created = remember {
+        mutableStateOf("")
+    }
+    
+    
+    
+    
+    LazyColumn(modifier = Modifier.fillMaxSize(0.7f)){
+        itemsIndexed(loginViewModel.chatList){index, item ->  
+            Text(text = item.text)
+        }
     }
     Box(
         modifier = Modifier
@@ -63,6 +77,7 @@ private fun postSenderMessage(
     ctx: Context,
     title:String,
     txt:String,
+//    created: MutableState<String>,
     result: MutableState<String>,
     loginViewModel: LoginViewModel
 ){

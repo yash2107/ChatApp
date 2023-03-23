@@ -67,7 +67,7 @@ fun History(navController: NavController,loginViewModel: LoginViewModel) {
             verticalArrangement = Arrangement.Center) {
             Button(onClick = {
                 navController.navigate(NavigationId.ChatRoomScreen.route)
-//                getMessage(result,loginViewModel)
+                getMessage(result,loginViewModel)
             }) {
 
                 Text(text = "Start Chatting")
@@ -117,29 +117,32 @@ private fun postChatRoom(
     )
 }
 
-//private fun getMessage(
-//    result: MutableState<String>,
-//    loginViewModel: LoginViewModel
-//){
-//    val getMessageApi = loginViewModel.receiveMessage()
-//    val call: Call<ReceiveDataClass?>? = getMessageApi.getMessage()
-//
-//    call!!.enqueue(object :Callback<ReceiveDataClass?>{
-//        override fun onResponse(
-//            call: Call<ReceiveDataClass?>,
-//            response: Response<ReceiveDataClass?>
-//        ) {
-//            val model: ReceiveDataClass? = response.body()
-//            val resp = model?.text
+private fun getMessage(
+    result: MutableState<String>,
+    loginViewModel: LoginViewModel
+){
+    val getMessageApi = loginViewModel.receiveMessage()
+    val call: Call<List<ReceiveDataClass>?>? = getMessageApi.getMessage()
+
+    call!!.enqueue(object :Callback<List<ReceiveDataClass>?>{
+        override fun onResponse(
+            call: Call<List<ReceiveDataClass>?>,
+            response: Response<List<ReceiveDataClass>?>
+        ) {
+            val model: List<ReceiveDataClass>? = response.body()
+//            val resp = model.size.
 //            if (resp != null) {
-//                result.value =resp
+//                result.value = resp
 //            }
-//            loginViewModel.receiveChat=model
-//        }
-//
-//        override fun onFailure(call: Call<ReceiveDataClass?>, t: Throwable) {
-//            result.value ="error "+t.message
-//        }
-//
-//    })
-//}
+            if (model != null) {
+                loginViewModel.chatList= model
+            }
+        }
+
+
+        override fun onFailure(call: Call<List<ReceiveDataClass>?>, t: Throwable) {
+            result.value ="error "+t.message
+        }
+
+    })
+}

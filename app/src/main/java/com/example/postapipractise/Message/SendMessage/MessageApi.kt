@@ -2,18 +2,20 @@ package com.example.postapipractise.Message.SendMessage
 
 
 import com.example.postapipractise.Message.MessageDataClass
+import com.example.postapipractise.Message.ReceiveMessage.ReceiveDataClass
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface MessageApi {
 
-//    @GET("message/")
-//    fun getMessage():Call<ReceiveDataClass?>?
+    @GET("messages/")
+    fun getMessage():Call<List<ReceiveDataClass>?>?
 
     @POST("messages/")
     fun postMessage(@Body messageDataClass: MessageDataClass?): Call<MessageDataClass?>?
