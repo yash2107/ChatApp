@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import com.example.postapipractise.ChatRoom.DataModel.ChatRoomApi
 import com.example.postapipractise.ChatRoom.DataModel.ChatRoomDataModel
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
+import com.example.postapipractise.Message.ReceiveMessage.ReceiveDataClass
 import com.example.postapipractise.Navigation.NavigationId
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -66,6 +67,7 @@ fun History(navController: NavController,loginViewModel: LoginViewModel) {
             verticalArrangement = Arrangement.Center) {
             Button(onClick = {
                 navController.navigate(NavigationId.ChatRoomScreen.route)
+//                getMessage(result,loginViewModel)
             }) {
 
                 Text(text = "Start Chatting")
@@ -114,3 +116,30 @@ private fun postChatRoom(
     }
     )
 }
+
+//private fun getMessage(
+//    result: MutableState<String>,
+//    loginViewModel: LoginViewModel
+//){
+//    val getMessageApi = loginViewModel.receiveMessage()
+//    val call: Call<ReceiveDataClass?>? = getMessageApi.getMessage()
+//
+//    call!!.enqueue(object :Callback<ReceiveDataClass?>{
+//        override fun onResponse(
+//            call: Call<ReceiveDataClass?>,
+//            response: Response<ReceiveDataClass?>
+//        ) {
+//            val model: ReceiveDataClass? = response.body()
+//            val resp = model?.text
+//            if (resp != null) {
+//                result.value =resp
+//            }
+//            loginViewModel.receiveChat=model
+//        }
+//
+//        override fun onFailure(call: Call<ReceiveDataClass?>, t: Throwable) {
+//            result.value ="error "+t.message
+//        }
+//
+//    })
+//}

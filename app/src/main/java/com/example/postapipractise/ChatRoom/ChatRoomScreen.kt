@@ -17,7 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
-import com.example.postapipractise.Message.SendMessage.MessageDataClass
+import com.example.postapipractise.Message.MessageDataClass
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -51,7 +51,6 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel) 
             }, modifier = Modifier.weight(1f))
             IconButton(onClick = {
                 postSenderMessage(ctx,title,txt.value,result,loginViewModel)
-
             }) {
                 Icon(Icons.Filled.Send, contentDescription = "")
             }
@@ -92,5 +91,7 @@ private fun postSenderMessage(
     }
     )
 }
+
+
 
 

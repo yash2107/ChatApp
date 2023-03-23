@@ -10,9 +10,9 @@ import com.example.postapipractise.ChatRoom.DataModel.ChatRoomDataModel
 import com.example.postapipractise.Login.LoginDataClass.LoginData
 import com.example.postapipractise.Login.Network.AuthenticationApi
 import com.example.postapipractise.Login.Network.LoginClass
-import com.example.postapipractise.Message.MessageApi
-import com.example.postapipractise.Message.MessageClass
-import com.example.postapipractise.Message.SendMessage.MessageDataClass
+import com.example.postapipractise.Message.SendMessage.MessageApi
+import com.example.postapipractise.Message.SendMessage.MessageClass
+import com.example.postapipractise.Message.MessageDataClass
 
 class LoginViewModel: ViewModel() {
     var user_name by mutableStateOf("")
@@ -37,10 +37,18 @@ class LoginViewModel: ViewModel() {
     var sendChat: MessageDataClass? by mutableStateOf(initial3)
 
     var text by mutableStateOf("")
-    fun sendMessage():MessageApi{
-        val messageApi = MessageClass(user_name,password).postMessageInstance()
+    fun sendMessage(): MessageApi {
+        val messageApi = MessageClass(user_name,password).MessageInstance()
         return messageApi
     }
+
+//    var initial4 = ReceiveDataClass("")
+//    var receiveChat : ReceiveDataClass? by mutableStateOf(initial4)
+//
+//    fun receiveMessage(): MessageApi {
+//        val receiveApi = MessageClass(user_name,password).MessageInstance()
+//        return receiveApi
+//    }
 }
 
 
