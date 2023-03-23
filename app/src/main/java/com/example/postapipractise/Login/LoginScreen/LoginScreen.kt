@@ -185,7 +185,7 @@ private fun getDetails(
     call!!.enqueue(object : Callback<LoginData?> {
 
         override fun onResponse(call: Call<LoginData?>?, response: Response<LoginData?>) {
-            Toast.makeText(ctx, "Logged in", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(ctx, "Logged in", Toast.LENGTH_SHORT).show()
             val model: LoginData? = response.body()
             val resp =
                 "Response Code : " + response.code() + "\n"+"Id: " + model?.is_authenticated+  "\n"+ model?.username
@@ -195,7 +195,10 @@ private fun getDetails(
             if(model?.is_authenticated==true){
 //                navController.navigate(NavigationItems.UserScreen.route)
                 navController.navigate(NavigationId.History.route)
-                Toast.makeText(ctx,"Logged in",Toast.LENGTH_LONG).show()
+                Toast.makeText(ctx,"Logged in Correctly",Toast.LENGTH_LONG).show()
+            }
+            else{
+                Toast.makeText(ctx,"No user Found",Toast.LENGTH_LONG).show()
             }
             println("/////////////////////////////////////////////////////${secret.value}")
 

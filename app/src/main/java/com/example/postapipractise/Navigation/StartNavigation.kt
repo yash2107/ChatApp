@@ -34,7 +34,7 @@ fun StartNavigation(navController: NavHostController = rememberNavController()){
             History(navController,loginViewModel)
         }
         composable(NavigationId.ChatRoomScreen.route){
-            ChatRoomScreen(loginViewModel, navController)
+            ChatRoomScreen( navController,loginViewModel)
         }
     }
 }
