@@ -94,6 +94,6 @@ class LoginClass(username:String,password:String){
             .addConverterFactory(GsonConverterFactory.create())
             .build().create(AuthenticationApi::class.java)
 
-        return  retrofit!!
+        return retrofit!!
     }
 }

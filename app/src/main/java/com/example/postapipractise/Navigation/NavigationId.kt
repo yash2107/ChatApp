@@ -8,4 +8,6 @@ sealed class NavigationId(val route:String){
     object SignUpScaff:NavigationId("sign_up_scaff")
 
     object History:NavigationId("history")
+
+    object ChatRoomScreen:NavigationId("chat_room_screen")
 }

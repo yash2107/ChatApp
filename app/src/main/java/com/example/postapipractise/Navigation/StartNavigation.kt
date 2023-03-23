@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.postapipractise.ChatRoom.ChatRoomScreen
 import com.example.postapipractise.ChatRoom.History
 import com.example.postapipractise.Login.LoginScreen.LoginScreen
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
@@ -30,7 +31,10 @@ fun StartNavigation(navController: NavHostController = rememberNavController()){
             SignUpScaff(navController)
         }
         composable(NavigationId.History.route){
-            History(navController)
+            History(navController,loginViewModel)
+        }
+        composable(NavigationId.ChatRoomScreen.route){
+            ChatRoomScreen(loginViewModel, navController)
         }
     }
 }
