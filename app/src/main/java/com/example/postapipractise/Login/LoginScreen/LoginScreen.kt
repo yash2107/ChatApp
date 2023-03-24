@@ -48,6 +48,8 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel){
     var result = remember{ mutableStateOf("") }
     var secret = remember{ mutableStateOf("") }
 
+    val isFieldsFilled = Username.value.isNotBlank() && Password.value.isNotBlank()
+
 //    var loginState by remember { mutableStateOf<LoginState>(LoginState.Loading) }
     val ctx = LocalContext.current
 
@@ -158,7 +160,7 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel){
                     ),
                     onClick = {
                         getDetails(ctx,result,secret,navController,loginViewModel)
-                    }) {
+                    }, enabled = isFieldsFilled) {
                     Text(text = "Login")
                 }
                 Spacer(modifier = Modifier.height(5.dp))
