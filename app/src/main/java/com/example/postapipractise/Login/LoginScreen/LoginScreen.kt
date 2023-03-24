@@ -2,6 +2,8 @@ package com.example.postapipractise.Login.LoginScreen
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,8 +14,11 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +31,9 @@ import com.example.postapipractise.Login.LoginDataClass.LoginData
 import com.example.postapipractise.Login.LoginState
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
 import com.example.postapipractise.Navigation.NavigationId
+import com.example.postapipractise.R
 import com.example.postapipractise.ui.theme.LightPurple
+import com.example.postapipractise.ui.theme.Purple200
 import com.example.postapipractise.ui.theme.Purple700
 import retrofit2.Call
 import retrofit2.Callback
@@ -45,10 +52,14 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel){
     val ctx = LocalContext.current
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(brush = Brush.verticalGradient(
+            colors = listOf(Color.White, Purple200),
+            startY = 500f,
+            endY = 3500f
+        )),
         contentAlignment = Alignment.Center
     ){
-//        Image(painter = painterResource(id = R.drawable.background ) , contentDescription = "", modifier = Modifier.fillMaxSize(),
+//        Image(painter = painterResource(id = R.drawable.logo ) , contentDescription = "", modifier = Modifier.fillMaxSize(),
 //            contentScale = ContentScale.FillBounds)
         Card (modifier = Modifier
             .fillMaxWidth()
@@ -65,23 +76,24 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel){
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ){
-//                Image(painter = painterResource(id = R.drawable.movieicon), contentDescription = "",modifier = Modifier.size(120.dp))
+                Image(painter = painterResource(id = R.drawable.logo), contentDescription = "",modifier = Modifier.size(160.dp))
                 Text(
-                    text = "Hello Again!",
+                    text = "Nye Interactive Assistant",
                     color = Color.Blue,
                     fontSize = 24.sp,
-                    fontFamily = FontFamily.Serif,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 16.dp)
                 )
-                Text(
-                    text = "Welcome Back",
-                    color = Color.Blue,
-                    fontSize = 24.sp,
-                    fontFamily = FontFamily.Serif,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 4.dp)
-                )
+//                Spacer(modifier = Modifier.height(10.dp))
+//                Text(
+//                    text = "(NIA)",
+//                    color = Color.Blue,
+//                    fontSize = 24.sp,
+//                    fontFamily = FontFamily.SansSerif,
+//                    fontWeight = FontWeight.SemiBold,
+//                    modifier = Modifier.padding(vertical = 4.dp)
+//                )
                 Text(
                     text = "Sign in to continue",
                     color = Color.Blue,

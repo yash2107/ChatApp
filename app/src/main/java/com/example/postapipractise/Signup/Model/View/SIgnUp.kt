@@ -3,6 +3,7 @@ package com.example.postapipractise.Signup.Model.View
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -61,7 +63,11 @@ fun SignupPostData(navController: NavController) {
     }
     // on below line we are creating a column.
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(brush = Brush.verticalGradient(
+            colors = listOf(Color.White, Purple200),
+            startY = 500f,
+            endY = 3500f
+        )),
         contentAlignment = Alignment.Center
     ) {
         Card(

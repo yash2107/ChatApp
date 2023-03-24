@@ -2,16 +2,19 @@ package com.example.postapipractise.Signup.Model.View
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.postapipractise.ui.theme.Purple200
+import com.example.postapipractise.ui.theme.Purple500
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -21,7 +24,11 @@ fun SignUpScaff(navController: NavController) {
         topBar = {
 
             // inside top bar we are specifying background color.
-            TopAppBar(backgroundColor = Purple200,
+            TopAppBar(navigationIcon = {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+            }, backgroundColor = Purple500,
 
                 // along with that we are specifying title for our top bar.
                 title = {
@@ -32,10 +39,7 @@ fun SignUpScaff(navController: NavController) {
                         text = "New Account",
 
                         // on below line we are specifying modifier to fill max width.
-                        modifier = Modifier.fillMaxWidth(),
-
-                        // on below line we are specifying text alignment.
-                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth().padding(start = 80.dp),
 
                         // on below line we are specifying color for our text.
                         color = Color.White

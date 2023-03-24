@@ -43,7 +43,7 @@ class LoginViewModel: ViewModel() {
         return messageApi
     }
 
-    var initial4 = ReceiveDataClass("")
+    private var initial4 = ReceiveDataClass("","","")
     var receiveChat : ReceiveDataClass? by mutableStateOf(initial4)
     var chatList:List<ReceiveDataClass>by mutableStateOf(listOf())
     fun receiveMessage(): MessageApi {

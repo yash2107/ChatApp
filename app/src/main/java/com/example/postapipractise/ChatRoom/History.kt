@@ -7,27 +7,22 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.postapipractise.ChatRoom.DataModel.ChatRoomApi
 import com.example.postapipractise.ChatRoom.DataModel.ChatRoomDataModel
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
 import com.example.postapipractise.Message.ReceiveMessage.ReceiveDataClass
 import com.example.postapipractise.Navigation.NavigationId
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.reflect.Modifier
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -37,6 +32,9 @@ fun History(navController: NavController,loginViewModel: LoginViewModel) {
     val ctx = LocalContext.current
 
     val result = remember {
+        mutableStateOf("")
+    }
+    val resultResponse = remember {
         mutableStateOf("")
     }
 
@@ -63,14 +61,14 @@ fun History(navController: NavController,loginViewModel: LoginViewModel) {
             }
         },
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center) {
-            Button(onClick = {
+        Column() {
+            Button(modifier = Modifier.padding(start = 130.dp, top = 150.dp),
+                onClick = {
                 navController.navigate(NavigationId.ChatRoomScreen.route)
-                getMessage(result,loginViewModel)
+                getMessage(resultResponse,loginViewModel)
             }) {
 
-                Text(text = "Start Chatting")
+                Text(text = "${loginViewModel.user_name} Chat room")
 
             }
         }
@@ -129,14 +127,12 @@ private fun getMessage(
             call: Call<List<ReceiveDataClass>?>,
             response: Response<List<ReceiveDataClass>?>
         ) {
-            val model: List<ReceiveDataClass>? = response.body()
-//            val resp = model.size.
-//            if (resp != null) {
-//                result.value = resp
+            val model: List<ReceiveDataClass> = response.body() ?: emptyList()
+
+            loginViewModel.chatList = model
+//            if (model != null) {
+//                loginViewModel.chatList= model
 //            }
-            if (model != null) {
-                loginViewModel.chatList= model
-            }
         }
 
 
