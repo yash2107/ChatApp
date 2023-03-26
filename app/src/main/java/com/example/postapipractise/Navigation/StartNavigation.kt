@@ -10,14 +10,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.postapipractise.ChatRoom.ChatRoomScreen
 import com.example.postapipractise.ChatRoom.History
+import com.example.postapipractise.ChatWebSocket
 import com.example.postapipractise.Login.LoginScreen.LoginScreen
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
 import com.example.postapipractise.Signup.Model.View.SignUpScaff
 import com.example.postapipractise.Signup.Model.View.SignupPostData
+import okhttp3.WebSocket
 
 @Composable
 fun StartNavigation(navController: NavHostController = rememberNavController()){
     val loginViewModel:LoginViewModel = viewModel()
+//    val chatWebSocket = ChatWebSocket(loginViewModel)
     NavHost(navController = navController, startDestination = NavigationId.LoginScreen.route){
         composable(NavigationId.LoginScreen.route){
             LoginScreen(navController,loginViewModel)

@@ -17,7 +17,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.postapipractise.ChatRoom.DataModel.ChatRoomDataModel
+import com.example.postapipractise.ChatWebSocket
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
+import com.example.postapipractise.Message.MessageDataClass
 import com.example.postapipractise.Message.ReceiveMessage.ReceiveDataClass
 import com.example.postapipractise.Navigation.NavigationId
 import retrofit2.Call
@@ -27,6 +29,7 @@ import retrofit2.Response
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun History(navController: NavController,loginViewModel: LoginViewModel) {
+//    val chatWebSocket = ChatWebSocket(loginViewModel)
     val title = loginViewModel.user_name
     println("################################# $title")
     val ctx = LocalContext.current
@@ -65,7 +68,8 @@ fun History(navController: NavController,loginViewModel: LoginViewModel) {
             Button(modifier = Modifier.padding(start = 130.dp, top = 150.dp),
                 onClick = {
                 navController.navigate(NavigationId.ChatRoomScreen.route)
-                getMessage(resultResponse,loginViewModel)
+                getSendMessage(resultResponse,loginViewModel)
+//                    loginViewModel.receiveMessage()
             }) {
 
                 Text(text = "${loginViewModel.user_name} Chat room")
@@ -76,6 +80,8 @@ fun History(navController: NavController,loginViewModel: LoginViewModel) {
         Text(text = result.value)
 
     }
+
+
 }
 
 private fun postChatRoom(
@@ -115,28 +121,34 @@ private fun postChatRoom(
     )
 }
 
-private fun getMessage(
+private fun getSendMessage(
     result: MutableState<String>,
     loginViewModel: LoginViewModel
 ){
     val getMessageApi = loginViewModel.receiveMessage()
-    val call: Call<List<ReceiveDataClass>?>? = getMessageApi.getMessage()
+    val call: Call<MutableList<ReceiveDataClass>?>? = getMessageApi.getMessage()
+    val msgList:MutableList<ReceiveDataClass> = mutableListOf()
+    val chatWebSocket = ChatWebSocket(loginViewModel)
 
-    call!!.enqueue(object :Callback<List<ReceiveDataClass>?>{
+    call!!.enqueue(object :Callback<MutableList<ReceiveDataClass>?>{
         override fun onResponse(
-            call: Call<List<ReceiveDataClass>?>,
-            response: Response<List<ReceiveDataClass>?>
+            call: Call<MutableList<ReceiveDataClass>?>,
+            response: Response<MutableList<ReceiveDataClass>?>
         ) {
-            val model: List<ReceiveDataClass> = response.body() ?: emptyList()
+            val model: MutableList<ReceiveDataClass> = (response.body() ?: emptyList()) as MutableList<ReceiveDataClass>
+//            for (models in model){
+//                loginViewModel.updateUIWithNewMessage(models)
+//            }
 
-            loginViewModel.chatList = model
+            loginViewModel.chatList = model as MutableList<ReceiveDataClass>
+//            loginViewModel.updateUIWithNewMessage(message = MessageDataClass(result.value))
 //            if (model != null) {
 //                loginViewModel.chatList= model
 //            }
         }
 
 
-        override fun onFailure(call: Call<List<ReceiveDataClass>?>, t: Throwable) {
+        override fun onFailure(call: Call<MutableList<ReceiveDataClass>?>, t: Throwable) {
             result.value ="error "+t.message
         }
 
