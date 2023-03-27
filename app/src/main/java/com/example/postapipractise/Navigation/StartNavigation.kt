@@ -1,5 +1,7 @@
 package com.example.postapipractise.Navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -13,14 +15,18 @@ import com.example.postapipractise.ChatRoom.History
 import com.example.postapipractise.ChatWebSocket
 import com.example.postapipractise.Login.LoginScreen.LoginScreen
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
+
+
 import com.example.postapipractise.Signup.Model.View.SignUpScaff
 import com.example.postapipractise.Signup.Model.View.SignupPostData
 import okhttp3.WebSocket
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun StartNavigation(navController: NavHostController = rememberNavController()){
     val loginViewModel:LoginViewModel = viewModel()
-//    val chatWebSocket = ChatWebSocket(loginViewModel)
+    val chatWebSocket = ChatWebSocket(loginViewModel)
+//    ChatWebSocket(loginViewModel)
     NavHost(navController = navController, startDestination = NavigationId.LoginScreen.route){
         composable(NavigationId.LoginScreen.route){
             LoginScreen(navController,loginViewModel)
@@ -37,7 +43,10 @@ fun StartNavigation(navController: NavHostController = rememberNavController()){
             History(navController,loginViewModel)
         }
         composable(NavigationId.ChatRoomScreen.route){
-            ChatRoomScreen( navController,loginViewModel)
+            ChatRoomScreen( navController,loginViewModel,chatWebSocket)
+        }
+        composable(NavigationId.QuestionList.route){
+//            QuestionList(navController)
         }
     }
 }

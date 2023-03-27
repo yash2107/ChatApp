@@ -38,33 +38,38 @@ import java.net.SocketException
 //}
 
 class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListener(){
-    private lateinit var webSocket: WebSocket
+    private var webSocket: WebSocket
 
     init {
-        val request = Request.Builder().url("wss://api.chatengine.io/person/?publicKey=52690bdb-3b85-4b96-9081-27fa9b4dc10e&username=${loginViewModel.user_name}&secret=${loginViewModel.password}").build()
+        val request = Request.Builder().url("wss://api.chatengine.io/chat/?projectID=52690bdb-3b85-4b96-9081-27fa9b4dc10e&chatID=153464&accessKey=ca-529db72b-f253-4bdb-9be1-8719383ecc2a").build()
         val client = OkHttpClient()
         webSocket = client.newWebSocket(request, this)
     }
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
         Log.d("MYTAG", "WebSocket connection established.")
+        webSocket.send("first message")
 //        webSocket.send("Hello, server!")
     }
 
     override fun onMessage(webSocket: WebSocket, text: String) {
+        Log.d("MYTAG", "onMessage: ${text}")
+
 //        val message = Gson().fromJson(text, ReceiveDataClass::class.java)
 //
 //        Log.d("MYTAG", "Received message: $text")
 //        // Update your UI with the new message
 //        loginViewModel.updateUIWithNewMessage(message)
         /*super.onMessage(webSocket, text)
-        Log.d("MYTAG", "Received text: $text")
-        val receivedMessage = Gson().fromJson(text, ReceiveDataClass::class.java)
-        if (receivedMessage != null) {
-            loginViewModel.updateUIWithNewMessage(receivedMessage)
+        Log.d("MYTAG", "Received text: $text")*/
+//        val receivedMessage = Gson().fromJson(text, ReceiveDataClass::class.java)
+//        if (receivedMessage != null) {
+//            loginViewModel.updateUIWithNewMessage(receivedMessage)
+//
+//        }
+//        Log.d("MYTAG", "onMessage: $receivedMessage")
 
-        }
-        Log.d("MYTAG", "onMessage: $receivedMessage ")*/
+
         val gson = Gson()
         val json = JSONObject(text)
         val action = json.getString("action")
@@ -77,8 +82,11 @@ class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListene
                 sender_username = message.getString("sender_username")
             )
             loginViewModel.updateUIWithNewMessage(receivedMessage)
-            Log.d("MYTAG", "onMessage: $receivedMessage ")
-        }
+//            loginViewModel.chatList.add(receivedMessage)
+            loginViewModel.updateMessageList((loginViewModel.messageList.value + message) as List<ReceiveDataClass>)
+            Log.d("MYTAG", "onMessage: ${receivedMessage} ${loginViewModel.chatList.size} ")
+            }
+
 
     }
 
@@ -91,7 +99,7 @@ class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListene
             Log.d("MYTAG", "WebSocket failure: Broken pipe")
             // Reconnect the WebSocket here
             val request = Request.Builder()
-                .url("wss://api.chatengine.io/person/?publicKey=52690bdb-3b85-4b96-9081-27fa9b4dc10e&username=${loginViewModel.user_name}&secret=${loginViewModel.password}")
+                .url("wss://api.chatengine.io/chat/?projectID=52690bdb-3b85-4b96-9081-27fa9b4dc10e&chatID=153464&accessKey=ca-529db72b-f253-4bdb-9be1-8719383ecc2a")
                 .build()
             val client = OkHttpClient()
             this.webSocket = client.newWebSocket(request, this)
@@ -124,7 +132,7 @@ class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListene
 //
 //        socket = client.newWebSocket(request, object : WebSocketListener() {
 //            override fun onOpen(webSocket: WebSocket, response: Response) {
-//                // WebSocket connection established
+//                // WebSocket connection esta`blished
 //                Log.d("MYTAG","Connection Open")
 //            }
 //

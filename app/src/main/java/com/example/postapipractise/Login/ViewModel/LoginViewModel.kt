@@ -15,6 +15,9 @@ import com.example.postapipractise.Message.SendMessage.MessageApi
 import com.example.postapipractise.Message.SendMessage.MessageClass
 import com.example.postapipractise.Message.MessageDataClass
 import com.example.postapipractise.Message.ReceiveMessage.ReceiveDataClass
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 @SuppressLint("MutableCollectionMutableState")
 class LoginViewModel: ViewModel() {
@@ -38,9 +41,7 @@ class LoginViewModel: ViewModel() {
 
     val initial3 = MessageDataClass("")
     var sendChat: MessageDataClass? by mutableStateOf(initial3)
-    var SendList:MutableList<MessageDataClass> by mutableStateOf(mutableListOf())
 
-//    var text by mutableStateOf("")
     fun sendMessage(): MessageApi {
         val messageApi = MessageClass(user_name,password).MessageInstance()
         return messageApi
@@ -54,42 +55,18 @@ class LoginViewModel: ViewModel() {
         return receiveApi
     }
 
-//    val messages = mutableListOf<MessageDataClass>()
-
-//    fun updateUIWithNewMessage(message: ReceiveDataClass) {
-//        chatList.add(message)
-//        Log.d("LOGINVIEW", "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%$chatList")
-//    }
-
-
-//private var initial4 = ReceiveDataClass("", "", "")
-//    var receiveChat: ReceiveDataClass? by mutableStateOf(initial4)
-//    var chatList: MutableList<ReceiveDataClass> by mutableStateOf(mutableStateListOf())
-//
-//    fun receiveMessage() {
-//        val receiveApi = MessageClass(user_name,password).MessageInstance()
-//        receiveApi.getMessage()?.enqueue(object : Callback<MutableList<ReceiveDataClass>?> {
-//            override fun onResponse(
-//                call: Call<MutableList<ReceiveDataClass>?>,
-//                response: Response<MutableList<ReceiveDataClass>?>
-//            ) {
-//                val messages = response.body()
-//                if (messages != null) {
-//                    for (message in messages) {
-//                        updateUIWithNewMessage(message)
-//                    }
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<MutableList<ReceiveDataClass>?>, t: Throwable) {
-//                Log.e("LOGINVIEW", "Failed to receive messages: ${t.message}")
-//            }
-//        })
-//    }
-
     fun updateUIWithNewMessage(message: ReceiveDataClass) {
         chatList.add(message)
     }
+
+    private val _messageList = MutableStateFlow(emptyList<ReceiveDataClass>())
+    val messageList: StateFlow<List<ReceiveDataClass>> = _messageList
+
+    fun updateMessageList(newList: List<ReceiveDataClass>) {
+        _messageList.value =newList
+        }
+
+
 }
 
 

@@ -10,4 +10,6 @@ sealed class NavigationId(val route:String){
     object History:NavigationId("history")
 
     object ChatRoomScreen:NavigationId("chat_room_screen")
+
+    object QuestionList:NavigationId("question_list")
 }

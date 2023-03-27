@@ -87,15 +87,7 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel){
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 16.dp)
                 )
-//                Spacer(modifier = Modifier.height(10.dp))
-//                Text(
-//                    text = "(NIA)",
-//                    color = Color.Blue,
-//                    fontSize = 24.sp,
-//                    fontFamily = FontFamily.SansSerif,
-//                    fontWeight = FontWeight.SemiBold,
-//                    modifier = Modifier.padding(vertical = 4.dp)
-//                )
+
                 Text(
                     text = "Sign in to continue",
                     color = Color.Blue,

@@ -17,11 +17,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.postapipractise.ChatRoom.DataModel.ChatRoomDataModel
-import com.example.postapipractise.ChatWebSocket
+//import com.example.postapipractise.ChatWebSocket
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
 import com.example.postapipractise.Message.MessageDataClass
 import com.example.postapipractise.Message.ReceiveMessage.ReceiveDataClass
 import com.example.postapipractise.Navigation.NavigationId
+
+
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -57,7 +59,9 @@ fun History(navController: NavController,loginViewModel: LoginViewModel) {
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                postChatRoom(ctx,title,result,loginViewModel,navController)
+//                postChatRoom(ctx,title,result,loginViewModel,navController)
+                navController.navigate(NavigationId.QuestionList.route)
+
             },
             ) {
                 Icon(Icons.Filled.Add, contentDescription ="")
@@ -69,7 +73,6 @@ fun History(navController: NavController,loginViewModel: LoginViewModel) {
                 onClick = {
                 navController.navigate(NavigationId.ChatRoomScreen.route)
                 getSendMessage(resultResponse,loginViewModel)
-//                    loginViewModel.receiveMessage()
             }) {
 
                 Text(text = "${loginViewModel.user_name} Chat room")
@@ -126,20 +129,14 @@ private fun getSendMessage(
     loginViewModel: LoginViewModel
 ){
     val getMessageApi = loginViewModel.receiveMessage()
-    val call: Call<MutableList<ReceiveDataClass>?>? = getMessageApi.getMessage()
-    val msgList:MutableList<ReceiveDataClass> = mutableListOf()
-    val chatWebSocket = ChatWebSocket(loginViewModel)
+    val call: Call<List<ReceiveDataClass>?>? = getMessageApi.getMessage()
 
-    call!!.enqueue(object :Callback<MutableList<ReceiveDataClass>?>{
+    call!!.enqueue(object :Callback<List<ReceiveDataClass>?>{
         override fun onResponse(
-            call: Call<MutableList<ReceiveDataClass>?>,
-            response: Response<MutableList<ReceiveDataClass>?>
+            call: Call<List<ReceiveDataClass>?>,
+            response: Response<List<ReceiveDataClass>?>
         ) {
-            val model: MutableList<ReceiveDataClass> = (response.body() ?: emptyList()) as MutableList<ReceiveDataClass>
-//            for (models in model){
-//                loginViewModel.updateUIWithNewMessage(models)
-//            }
-
+            val model: List<ReceiveDataClass> = (response.body() ?: emptyList())
             loginViewModel.chatList = model as MutableList<ReceiveDataClass>
 //            loginViewModel.updateUIWithNewMessage(message = MessageDataClass(result.value))
 //            if (model != null) {
@@ -148,7 +145,7 @@ private fun getSendMessage(
         }
 
 
-        override fun onFailure(call: Call<MutableList<ReceiveDataClass>?>, t: Throwable) {
+        override fun onFailure(call: Call<List<ReceiveDataClass>?>, t: Throwable) {
             result.value ="error "+t.message
         }
 

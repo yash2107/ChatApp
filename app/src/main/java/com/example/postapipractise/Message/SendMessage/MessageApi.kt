@@ -15,7 +15,7 @@ import retrofit2.http.POST
 interface MessageApi {
 
     @GET("messages/")
-    fun getMessage():Call<MutableList<ReceiveDataClass>?>?
+    fun getMessage():Call<List<ReceiveDataClass>?>?
 
     @POST("messages/")
     fun postMessage(@Body messageDataClass: MessageDataClass?): Call<MessageDataClass?>?

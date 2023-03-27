@@ -3,7 +3,6 @@ package com.example.postapipractise.ChatRoom
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -33,24 +32,23 @@ import com.example.postapipractise.ui.theme.senderColor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.time.LocalDateTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnrememberedMutableState", "UnusedMaterialScaffoldPaddingParameter",
     "RememberReturnType"
 )
 @Composable
-fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel) {
-    val txt = remember { mutableStateOf("") }
+fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,chatWebSocket:ChatWebSocket) {
     val title = loginViewModel.user_name
     val ctx = LocalContext.current
     val result = remember {
         mutableStateOf("")
     }
-    val created = remember {
-        mutableStateOf("")
-    }
-    val chatWebSocket = ChatWebSocket(loginViewModel)
+    val messageListState = loginViewModel.messageList.collectAsState()
+    val messageList = messageListState.value
+    Text(text = messageList.size.toString())
+
+//    val chatWebSocket = ChatWebSocket(loginViewModel)
 
     Scaffold(
         topBar = {
@@ -66,7 +64,6 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel) 
             )
         }
     ) {
-
 
         LazyColumn(
             modifier = Modifier
@@ -97,22 +94,19 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel) 
 //                                        Modifier.fillMaxWidth(),
 //                                        horizontalAlignment = Alignment.End
                                 ) {
-                                    item.text?.let { it1 ->
                                         Text(
-                                            text = it1,
+                                            text = item.text,
                                             modifier = Modifier
                                                 .padding(8.dp)
                                             //.align(Alignment.Start)
                                         )
-                                    }
-                                    item.created?.let { it1 ->
                                         Text(
-                                            text = it1.substring(12, 16),
+                                            text = item.created.substring(12, 16),
                                             modifier = Modifier
                                                 .align(Alignment.End)
                                                 .padding(start = 8.dp, end = 8.dp, bottom = 4.dp)
                                         )
-                                    }
+
                                 }
                             }
                         }
@@ -129,19 +123,18 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel) 
                                 backgroundColor = Color.LightGray
                             ) {
                                 Column {
-                                    item.text?.let { it1 ->
                                         Text(
-                                            text = it1, modifier = Modifier
+                                            text = item.text, modifier = Modifier
                                                 .padding(8.dp)
                                         )
-                                    }
-                                    item.created?.let { it1 ->
+
+
                                         Text(
-                                            text = it1.substring(12, 16), modifier = Modifier
+                                            text = item.created.substring(12, 16), modifier = Modifier
                                                 .align(Alignment.End)
                                                 .padding(start = 8.dp, bottom = 4.dp, end = 5.dp)
                                         )
-                                    }
+
                                 }
                             }
                         }
@@ -175,6 +168,8 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel) 
                 )
                 IconButton(
                     onClick = {
+//                        loginViewModel.chatList.add(ReceiveDataClass("Constant","asfffffffffffaaaaaaaaaaaaaafafa",loginViewModel.user_name))
+                        chatWebSocket.sendMessage(textFieldValue)
                         postSenderMessage(
                             ctx,
                             title,
@@ -182,10 +177,9 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel) 
                             result,
                             loginViewModel
                         )
-                        chatWebSocket.sendMessage(textFieldValue)
-                        val created = LocalDateTime.now().toString() // get current timestamp
-                        val message = ReceiveDataClass(textFieldValue,created,loginViewModel.user_name)
-                        loginViewModel.updateUIWithNewMessage(message)
+//                        val created = LocalDateTime.now().toString() // get current timestamp
+//                        val message = ReceiveDataClass(textFieldValue,created,loginViewModel.user_name)
+//                        loginViewModel.updateUIWithNewMessage(message)
                         textFieldValue = ""
                         println( "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ChatRoomScreen: ${loginViewModel.chatList[loginViewModel.chatList.size-1]} ")
                     },
@@ -239,175 +233,6 @@ private fun postSenderMessage(
     }
     )
 }
-
-//@Composable
-//fun ChatWebSocket(loginViewModel:LoginViewModel) {
-//    val url = "wss://api.chatengine.io/person/?publicKey=52690bdb-3b85-4b96-9081-27fa9b4dc10e&username=${loginViewModel.user_name}&secret=${loginViewModel.password}"
-//
-//    var socket by remember { mutableStateOf<WebSocket?>(null) }
-//
-//    DisposableEffect(url) {
-//        val client = OkHttpClient()
-//        val request = Request.Builder()
-//            .url(url)
-//            .build()
-//
-//        socket = client.newWebSocket(request, object : WebSocketListener() {
-//            override fun onOpen(webSocket: WebSocket, response: okhttp3.Response) {
-//                // WebSocket connection established
-//                Log.d("MYTAG","Connection Open")
-//            }
-//
-//            override fun onMessage(webSocket: WebSocket, text: String) {
-//                // Handle text message received from the server
-//            }
-//
-//            override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-//                // Handle binary message received from the server
-//            }
-//
-//            override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-//                // WebSocket connection is about to close
-////                webSocket.close(NORMAL_CLOSURE_STATUS, null)
-//            }
-//
-//            override fun onFailure(webSocket: WebSocket, t: Throwable, response: okhttp3.Response?) {
-//                // WebSocket connection failed
-//            }
-//        })
-//
-//        onDispose {
-//            // Disconnect the WebSocket when the composable is removed from the composition
-////            socket?.close(NORMAL_CLOSURE_STATUS, null)
-//        }
-//    }
-//}
-
-
-
-
-
-
-//    Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(bottom = 16.dp),
-//        contentAlignment = Alignment.BottomCenter
-//    ) {
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(horizontal = 16.dp),
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            OutlinedTextField(value = txt.value, onValueChange = {
-//                txt.value =it
-//            }, modifier = Modifier.weight(1f))
-//            IconButton(onClick = {
-//                postSenderMessage(ctx,title,txt.value,result,loginViewModel)
-//            }) {
-//                Icon(Icons.Filled.Send, contentDescription = "")
-//            }
-//        }
-//    }
-//    Text(text = result.value)
-
-/*fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel) {
-    val txt = remember{mutableStateOf("")}
-//    val txt = loginViewModel.text
-    val title = loginViewModel.user_name
-    val ctx = LocalContext.current
-    val result = remember {
-        mutableStateOf("")
-    }
-    val created = remember {
-        mutableStateOf("")
-    }
-    LazyColumn(modifier = Modifier.fillMaxWidth(1f).fillMaxHeight(0.9f)){
-        itemsIndexed(loginViewModel.chatList){index, item ->
-            if (item.sender_username == loginViewModel.user_name) {
-                Box(modifier = Modifier.padding(start = 90.dp) ) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth(1f)
-                            .padding(16.dp),
-                        backgroundColor = senderColor,
-
-                    ) {
-                        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
-                            Text(
-                                text = item.text,
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    // .background(Color(0xFFDCF8C6))
-                                    //.border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
-                                    .padding(8.dp)
-                            )
-                            Text(
-                                text = item.created.substring(12, 16),
-                                modifier = Modifier
-                                    .align(Alignment.End)
-                                    .padding(end = 8.dp, bottom = 4.dp)
-                            )
-                        }
-                    }
-                }
-
-
-            } else {
-                Box(modifier = Modifier.padding(end = 90.dp)) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth(1f)
-                            .padding(16.dp),
-                        backgroundColor = Color.White
-                    ) {
-                        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.Start) {
-                            Text(
-                                text = item.text, modifier = Modifier
-                                    .padding(8.dp)
-                                    //                                .background(Color.White)
-                                    //                                .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
-                                    .padding(8.dp)
-                            )
-                            Text(
-                                text = item.created.substring(12, 16), modifier = Modifier
-                                    .align(Alignment.End)
-                                    .padding(start = 8.dp, bottom = 4.dp, end = 5.dp)
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 16.dp),
-        contentAlignment = Alignment.BottomCenter
-    ) {
-//        Text(text = "Start Chatting")
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            OutlinedTextField(value = txt.value, onValueChange = {
-                txt.value =it
-            }, modifier = Modifier.weight(1f))
-            IconButton(onClick = {
-                postSenderMessage(ctx,title,txt.value,result,loginViewModel)
-            }) {
-                Icon(Icons.Filled.Send, contentDescription = "")
-            }
-        }
-    }
-    Text(text = result.value)
-}*/
 
 
 
