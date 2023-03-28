@@ -48,8 +48,6 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
     val messageList = messageListState.value
     Text(text = messageList.size.toString())
 
-//    val chatWebSocket = ChatWebSocket(loginViewModel)
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -177,9 +175,6 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                             result,
                             loginViewModel
                         )
-//                        val created = LocalDateTime.now().toString() // get current timestamp
-//                        val message = ReceiveDataClass(textFieldValue,created,loginViewModel.user_name)
-//                        loginViewModel.updateUIWithNewMessage(message)
                         textFieldValue = ""
                         println( "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ChatRoomScreen: ${loginViewModel.chatList[loginViewModel.chatList.size-1]} ")
                     },
@@ -223,7 +218,6 @@ private fun postSenderMessage(
             }
             loginViewModel.sendChat =model
 
-//            loginViewModel.updateUIWithNewMessage(message = MessageDataClass(result.value))
         }
 
         override fun onFailure(call: Call<MessageDataClass?>, t: Throwable) {
