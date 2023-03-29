@@ -52,177 +52,6 @@ import retrofit2.Callback
 import retrofit2.Response
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "SuspiciousIndentation")
-/*@Composable
-fun History(navController: NavController,loginViewModel: LoginViewModel) {
-//    val chatWebSocket = ChatWebSocket(loginViewModel)
-    val title = loginViewModel.user_name
-    println("################################# $title")
-    val ctx = LocalContext.current
-
-    val result = remember {
-        mutableStateOf("")
-    }
-    val resultResponse = remember {
-        mutableStateOf("")
-    }
-    val context = LocalContext.current
-    val sharedPreferences = LocalContext.current.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
-
-    sharedPreferences.edit().putString("secret_id", loginViewModel.password).apply()
-
-    getChatHistory(loginViewModel)
-
-    val scaffoldState = rememberScaffoldState()
-    Scaffold(
-
-        scaffoldState = scaffoldState,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = "Chats")
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navController.popBackStack()
-                    }) { // Use NavHostController to handle navigation back
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = "Back",
-                            tint = Color.White
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = {
-
-
-
-                    }) {
-                        Icon(Icons.Default.ExitToApp, contentDescription = "LogOut")
-                    }
-                }
-                )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                postChatRoom(ctx,title,result,loginViewModel,navController)
-                    navController.navigate(NavigationId.QuestionList.route)
-
-                },
-            ) {
-                Icon(Icons.Filled.Add, contentDescription = "")
-            }
-        },
-    ) {
-
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(690.dp)
-                .background(Color.White)
-                .padding(8.dp),
-
-            //reverseLayout = true
-            //.sortedByDescending{it.created}
-
-        ){
-            itemsIndexed(loginViewModel.allChats) { lastIndex, item ->
-                val time = item.created.subSequence(11, 16)
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .padding(3.dp)
-                    ) {
-                        Column(
-                            Modifier.padding(8.dp),
-                            verticalArrangement = Arrangement.SpaceBetween
-
-                        ) {
-
-                            Row(
-                                modifier = Modifier.padding(5.dp),
-
-                                ) {
-                                val cardName =
-                                    if (title == "user1") "user2" else "user1"
-//                                        if (item.people[lastIndex].person.username == "tarushi07") "yash07" else "tarushi07"
-                                Text(
-                                    text = cardName,
-                                    style = MaterialTheme.typography.h6,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black
-                                )
-                                Spacer(modifier = Modifier.width(200.dp))
-                                Text(
-                                    text = time.toString(),
-                                    style = MaterialTheme.typography.h6,
-                                    color = Color.LightGray,
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Row(
-                            ) {
-                                Text(
-                                    text = item.last_message.text,
-                                    style = MaterialTheme.typography.h6,
-                                    color = Color.LightGray
-                                )
-                                Spacer(modifier = Modifier.width(150.dp))
-                                IconButton(onClick = {
-                                    loginViewModel.isLoading.value=true
-                                    loginViewModel.chatId = item.id
-                                    loginViewModel.accesskey = item.access_key
-//                                        navController.navigate(NavigationId.ChatRoomScreen.route)
-                                        getSendMessage(resultResponse,loginViewModel,navController)
-                                }) {
-                                    Icon(
-                                        Icons.Default.ArrowForward,
-                                        contentDescription = "",
-                                        tint = Color.Gray,
-                                        //modifier = Modifier.align(Alignment.CenterEnd)
-                                    )
-
-                                }
-                            }
-                        }
-                    }
-                    Divider(Modifier.height(3.dp))
-                }
-            }
-        }
-        Text(
-            text = result.value,
-        )
-
-
-        *//*Column() {
-            Button(modifier = Modifier.padding(start = 130.dp, top = 150.dp),
-                onClick = {
-                    navController.navigate(NavigationId.ChatRoomScreen.route)
-                    getSendMessage(resultResponse, loginViewModel)
-                }) {
-
-                Text(text = "${loginViewModel.user_name} Chat room")
-
-            }
-        }
-        Text(text = title)
-        Text(text = result.value)*//*
-
-    }
-    if (loginViewModel.isLoading.value == true){
-        Text(text = "this is inside text")
-        println("*******************************************8")
-        LoadingView()
-    }
-}*/
-
-
 @Composable
 fun History(navController: NavController, loginViewModel: LoginViewModel,sharedPreferences: SharedPreferences) {
     val ctx = LocalContext.current
@@ -232,7 +61,7 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
     val resultResponse = remember { mutableStateOf("") }
     val editor: SharedPreferences.Editor = sharedPreferences.edit()
 
-    getChatHistory(loginViewModel)
+
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -250,6 +79,13 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
                 },
                 actions = {
                     IconButton(onClick = {
+                        editor.putString("USERNAME", "")
+                        editor.putString("SECRET", "")
+                        editor.apply()
+                        val intent = Intent(ctx, MainActivity::class.java)
+                        intent.flags =
+                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        ctx.startActivity(intent)
                     }) {
                         Icon(Icons.Default.ExitToApp, contentDescription = "LogOut")
                     }
@@ -259,7 +95,7 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    postChatRoom(ctx, title, result, loginViewModel, navController)
+                    postChatRoom(ctx, title.value, result, loginViewModel, navController)
                     navController.navigate(NavigationId.QuestionList.route)
                 }
             ) {
@@ -275,7 +111,7 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
         ) {
             itemsIndexed(loginViewModel.allChats) { _, item ->
                 val time = item.created.subSequence(11, 16)
-                val cardName = if (title == "user1") "user2" else "user1"
+                val cardName = if (title.value == "user1") "user2" else "user1"
 
                 Card(
                     modifier = Modifier

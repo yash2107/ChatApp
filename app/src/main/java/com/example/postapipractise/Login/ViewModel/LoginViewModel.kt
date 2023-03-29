@@ -35,8 +35,8 @@ import kotlinx.coroutines.flow.StateFlow
 
 @SuppressLint("MutableCollectionMutableState")
 class LoginViewModel: ViewModel() {
-    var user_name by mutableStateOf("")
-    var password by mutableStateOf("")
+    var user_name = mutableStateOf("")
+    var password = mutableStateOf("")
 
     val initial = LoginData("", "", false)
     var UserData: LoginData? by mutableStateOf(initial)
@@ -49,17 +49,13 @@ class LoginViewModel: ViewModel() {
     var chatId by mutableStateOf(0)
     var accesskey by mutableStateOf("")
 
-
-
-
-
     fun AuthenticateUser(): AuthenticationApi {
-        val apiService = LoginClass(user_name,password).getInstance()
+        val apiService = LoginClass(user_name.value,password.value).getInstance()
 
         return apiService
     }
     fun createRoom():ChatRoomApi{
-        val chatRoomApi = ChatRoomClass(user_name,password).postInstance()
+        val chatRoomApi = ChatRoomClass(user_name.value,password.value).postInstance()
         return chatRoomApi
     }
 
@@ -67,7 +63,7 @@ class LoginViewModel: ViewModel() {
     var sendChat: MessageDataClass? by mutableStateOf(initial3)
 
     fun sendMessage(): MessageApi {
-        val messageApi = MessageClass(user_name,password,chatId).MessageInstance()
+        val messageApi = MessageClass(user_name.value,password.value,chatId).MessageInstance()
         return messageApi
     }
 
@@ -75,7 +71,7 @@ class LoginViewModel: ViewModel() {
     var receiveChat : ReceiveDataClass? by mutableStateOf(initial4)
     var chatList:MutableList<ReceiveDataClass>by mutableStateOf(mutableListOf() )
     fun receiveMessage(): MessageApi {
-        val receiveApi = MessageClass(user_name,password,chatId).MessageInstance()
+        val receiveApi = MessageClass(user_name.value,password.value,chatId).MessageInstance()
         return receiveApi
     }
 
@@ -93,7 +89,7 @@ class LoginViewModel: ViewModel() {
     var allChats : MutableList<GetChatsDataClass> by mutableStateOf(mutableListOf())
     //var newMsgDetailsGet:MsgDataClassModel? by mutableStateOf(firstMsgGet)
     fun getAllChats(): GetMyChats {
-        val msgApiService= GetMyChatsClass(user_name,password).getMsgInstance()
+        val msgApiService= GetMyChatsClass(user_name.value,password.value).getMsgInstance()
         return  msgApiService
     }
 

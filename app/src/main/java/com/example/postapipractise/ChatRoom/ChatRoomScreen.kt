@@ -82,7 +82,7 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
             reverseLayout = true
         ) {
             itemsIndexed(loginViewModel.chatList.sortedByDescending { it.created }) { index, item ->
-                if (item.sender_username == loginViewModel.user_name) {
+                if (item.sender_username == loginViewModel.user_name.value) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.End,
@@ -185,7 +185,7 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                         loginViewModel.updateTypingStatus(false)
                         postSenderMessage(
                             ctx,
-                            title,
+                            title.value,
                             textFieldValue,
                             result,
                             loginViewModel

@@ -33,10 +33,6 @@ fun StartNavigation(sharedPreferences: SharedPreferences,navController: NavHostC
             LoginScreen(navController,loginViewModel,sharedPreferences)
         }
 
-//        composable(NavigationId.SignupPostData.route){
-//            SignupPostData(navController)
-//        }
-
         composable(NavigationId.SignUpScaff.route){
             SignUpScaff(navController)
         }

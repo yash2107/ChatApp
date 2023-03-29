@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.postapipractise.ChatRoom.getChatHistory
 import com.example.postapipractise.Login.LoginDataClass.LoginData
 import com.example.postapipractise.Login.LoginState
 import com.example.postapipractise.Login.ViewModel.*
@@ -45,8 +46,8 @@ import retrofit2.Response
 @Composable
 fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,sharedPreferences:SharedPreferences){
 
-    var Username = remember{ mutableStateOf("") }
-    var Password = remember{ mutableStateOf("") }
+    var Username = loginViewModel.user_name
+    var Password = loginViewModel.password
 
     var result = remember{ mutableStateOf("") }
     var secret = remember{ mutableStateOf("") }
@@ -59,124 +60,121 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,share
     val email = sharedPreferences.getString("USERNAME", "").toString()
     val secrett = sharedPreferences.getString("SECRET", "").toString()
 
-    println("******************* $email")
 
-//    if (email.isNotBlank()){
-//        loginViewModel.user_name = email
-//        loginViewModel.password = secrett
-//        getDetails(ctx,result,secret,navController,loginViewModel)
-//    }
-
-
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(Color.White, Purple200),
-                    startY = 500f,
-                    endY = 3500f
-                )
-            ),
-        contentAlignment = Alignment.Center
-    ){
+    if (email.isNotBlank()){
+        loginViewModel.user_name.value = email
+        loginViewModel.password.value = secrett
+        getDetails(ctx,email,secrett,result,secret,navController,loginViewModel,sharedPreferences)
+    }
+    else{
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color.White, Purple200),
+                        startY = 500f,
+                        endY = 3500f
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ){
 //        Image(painter = painterResource(id = R.drawable.logo ) , contentDescription = "", modifier = Modifier.fillMaxSize(),
 //            contentScale = ContentScale.FillBounds)
-        Card (modifier = Modifier
-            .fillMaxWidth()
-            .height(700.dp)
+            Card (modifier = Modifier
+                .fillMaxWidth()
+                .height(700.dp)
 
-            .padding(16.dp),
-            backgroundColor = LightPurple,
-            shape = RoundedCornerShape(50.dp),
-            elevation = 8.dp){
-            Column (
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ){
-                Image(painter = painterResource(id = R.drawable.logo), contentDescription = "",modifier = Modifier.size(160.dp))
-                Text(
-                    text = "Nye Interactive Assistant",
-                    color = Color.Blue,
-                    fontSize = 24.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(vertical = 16.dp)
-                )
+                .padding(16.dp),
+                backgroundColor = LightPurple,
+                shape = RoundedCornerShape(50.dp),
+                elevation = 8.dp){
+                Column (
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ){
+                    Image(painter = painterResource(id = R.drawable.logo), contentDescription = "",modifier = Modifier.size(160.dp))
+                    Text(
+                        text = "Nye Interactive Assistant",
+                        color = Color.Blue,
+                        fontSize = 24.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(vertical = 16.dp)
+                    )
 
-                Text(
-                    text = "Sign in to continue",
-                    color = Color.Blue,
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    modifier = Modifier.padding(vertical = 8.dp)
-                )
+                    Text(
+                        text = "Sign in to continue",
+                        color = Color.Blue,
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
 
-                OutlinedTextField(
-                    value = Username.value,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        cursorColor = Purple700,
-                        focusedBorderColor = Purple700,
-                        unfocusedBorderColor = LightPurple
-                    ),
-                    onValueChange = { Username.value = it },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Person,
-                            contentDescription = "Username Icon",
-                            tint = Purple700
-                        )
-                    },
-                    label = { Text(text = "Username") },
-                    placeholder = { Text(text = "Enter your username") },
-                    textStyle = TextStyle(color = Purple700)
-                )
+                    OutlinedTextField(
+                        value = Username.value,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            cursorColor = Purple700,
+                            focusedBorderColor = Purple700,
+                            unfocusedBorderColor = LightPurple
+                        ),
+                        onValueChange = { Username.value = it },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Person,
+                                contentDescription = "Username Icon",
+                                tint = Purple700
+                            )
+                        },
+                        label = { Text(text = "Username") },
+                        placeholder = { Text(text = "Enter your username") },
+                        textStyle = TextStyle(color = Purple700)
+                    )
 
-                OutlinedTextField(
-                    value = Password.value,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        cursorColor = Purple700,
-                        focusedBorderColor = Purple700,
-                        unfocusedBorderColor = LightPurple
-                    ),
-                    onValueChange = { Password.value = it },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.Lock,
-                            contentDescription = "Password Icon",
-                            tint = Purple700
-                        )
-                    },
-                    label = { Text(text = "Password") },
-                    placeholder = { Text(text = "Enter your password") },
-                    visualTransformation = PasswordVisualTransformation(),
-                    textStyle = TextStyle(color = Purple700)
-                )
-                Spacer(modifier = Modifier.height(20.dp))
+                    OutlinedTextField(
+                        value = Password.value,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            cursorColor = Purple700,
+                            focusedBorderColor = Purple700,
+                            unfocusedBorderColor = LightPurple
+                        ),
+                        onValueChange = { Password.value = it },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.Lock,
+                                contentDescription = "Password Icon",
+                                tint = Purple700
+                            )
+                        },
+                        label = { Text(text = "Password") },
+                        placeholder = { Text(text = "Enter your password") },
+                        visualTransformation = PasswordVisualTransformation(),
+                        textStyle = TextStyle(color = Purple700)
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                loginViewModel.user_name = Username.value
-                loginViewModel.password = Password.value
-                Button(modifier = Modifier
-                    .height(48.dp)
-                    .fillMaxWidth(),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Purple700,
-                        contentColor = Color.White
-                    ),
-                    onClick = {
-                        loginViewModel.isLoading.value = true
-                        getDetails(ctx,result,secret,navController,loginViewModel,sharedPreferences)
-                    }, enabled = isFieldsFilled) {
-                    Text(text = "Login")
-                }
-                Spacer(modifier = Modifier.height(5.dp))
+                    loginViewModel.user_name.value = Username.value
+                    loginViewModel.password.value = Password.value
+                    Button(modifier = Modifier
+                        .height(48.dp)
+                        .fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Purple700,
+                            contentColor = Color.White
+                        ),
+                        onClick = {
+                            loginViewModel.isLoading.value = true
+                            getDetails(ctx,Username.value,Password.value,result,secret,navController,loginViewModel,sharedPreferences)
+                        }, enabled = isFieldsFilled) {
+                        Text(text = "Login")
+                    }
+                    Spacer(modifier = Modifier.height(5.dp))
 
 //                when (loginState) {
 //                    LoginState.Loading -> CircularProgressIndicator()
@@ -184,25 +182,31 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,share
 //                    is LoginState.Error -> Text((loginState as LoginState.Error).message ?: "An error occurred")
 //                    null -> Unit
 //                }
-                Row {
-                    Text(text = "Don't Have Account?")
-                    Text(text = "SignUp", color = Color.Blue,
-                        modifier = Modifier.clickable {
-                            navController.navigate(NavigationId.SignUpScaff.route)
-                        })
-                }
-                if (loginViewModel.isLoading.value==true){
-                    LoadingView()
+                    Row {
+                        Text(text = "Don't Have Account?")
+                        Text(text = "SignUp", color = Color.Blue,
+                            modifier = Modifier.clickable {
+                                navController.navigate(NavigationId.SignUpScaff.route)
+                            })
+                    }
+                    if (loginViewModel.isLoading.value==true){
+                        LoadingView()
+                    }
                 }
             }
-        }
 
+        }
     }
+
+
+
 }
 
 
 private fun getDetails(
     ctx: Context,
+    Username:String,
+    Password:String,
     result: MutableState<String>,
     secret: MutableState<String>,
     navController: NavController,
@@ -213,7 +217,7 @@ private fun getDetails(
 
     val call: Call<LoginData?>? = authenticationApi.getUsers()
 
-
+    val editor: SharedPreferences.Editor = sharedPreferences.edit()
     call!!.enqueue(object : Callback<LoginData?> {
 
         override fun onResponse(call: Call<LoginData?>?, response: Response<LoginData?>) {
@@ -234,7 +238,12 @@ private fun getDetails(
             }
             loginViewModel.isLoading.value = false
             println("/////////////////////////////////////////////////////${secret.value}")
-
+            if (response.isSuccessful){
+                getChatHistory(loginViewModel)
+                editor.putString("USERNAME", Username)
+                editor.putString("SECRET", Password)
+                editor.apply()
+            }
         }
 
         override fun onFailure(call: Call<LoginData?>?, t: Throwable) {
