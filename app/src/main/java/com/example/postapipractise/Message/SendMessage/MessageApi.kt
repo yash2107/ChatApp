@@ -21,7 +21,7 @@ interface MessageApi {
     fun postMessage(@Body messageDataClass: MessageDataClass?): Call<MessageDataClass?>?
 }
 
-class MessageClass(username:String,password:String){
+class MessageClass(username:String,password:String,val chatId:Int){
 
     var username=username
     var password=password
@@ -31,7 +31,7 @@ class MessageClass(username:String,password:String){
         val loggingInterceptor= HttpLoggingInterceptor()
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
 
-        val url = "https://api.chatengine.io/chats/153464/"
+        val url = "https://api.chatengine.io/chats/${chatId}/"
 
         val httpClient= OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)

@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,9 +25,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.postapipractise.ChatWebSocket
+import com.example.postapipractise.Login.ViewModel.LoadingView
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
 import com.example.postapipractise.Message.MessageDataClass
-import com.example.postapipractise.Message.ReceiveMessage.ReceiveDataClass
 import com.example.postapipractise.ui.theme.Purple500
 import com.example.postapipractise.ui.theme.senderColor
 import retrofit2.Call
@@ -48,12 +49,17 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
     val messageList = messageListState.value
     Text(text = messageList.size.toString())
 
+    val isTyping by loginViewModel.isTyping.observeAsState(false)
+
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Chat Room")
+                        if(isTyping) "Typing" else "Chat"
+//                    Text(text = "Chat Room")
                 },
+
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
@@ -61,8 +67,7 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                 }, backgroundColor = Purple500
             )
         }
-    ) {
-
+    ){
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth(1f)
@@ -75,35 +80,37 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                     )
                 ),
             reverseLayout = true
-
         ) {
-            itemsIndexed(loginViewModel.chatList.sortedByDescending { it.created } ) { index, item ->
+            itemsIndexed(loginViewModel.chatList.sortedByDescending { it.created }) { index, item ->
                 if (item.sender_username == loginViewModel.user_name) {
-                    Column(modifier= Modifier.fillMaxWidth(),horizontalAlignment = Alignment.End,) {
-                        Box(modifier = Modifier.padding(start = 40.dp,top = 8.dp, end = 8.dp)) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.End,
+                    ) {
+                        Box(modifier = Modifier.padding(start = 40.dp, top = 8.dp, end = 8.dp)) {
                             Card(
                                 modifier = Modifier
                                     .padding(5.dp)
                                     .clip(RoundedCornerShape(15.dp, 0.dp, 15.dp, 15.dp)),
                                 backgroundColor = senderColor,
 
-                            ) {
+                                ) {
                                 Column(
 //                                        Modifier.fillMaxWidth(),
 //                                        horizontalAlignment = Alignment.End
                                 ) {
-                                        Text(
-                                            text = item.text,
-                                            modifier = Modifier
-                                                .padding(8.dp)
-                                            //.align(Alignment.Start)
-                                        )
-                                        Text(
-                                            text = item.created.substring(12, 16),
-                                            modifier = Modifier
-                                                .align(Alignment.End)
-                                                .padding(start = 8.dp, end = 8.dp, bottom = 4.dp)
-                                        )
+                                    Text(
+                                        text = item.text,
+                                        modifier = Modifier
+                                            .padding(8.dp)
+                                        //.align(Alignment.Start)
+                                    )
+                                    Text(
+                                        text = item.created.substring(12, 16),
+                                        modifier = Modifier
+                                            .align(Alignment.End)
+                                            .padding(start = 8.dp, end = 8.dp, bottom = 4.dp)
+                                    )
 
                                 }
                             }
@@ -112,8 +119,11 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
 
 
                 } else {
-                    Column(modifier= Modifier.fillMaxWidth(),horizontalAlignment = Alignment.Start) {
-                        Box(modifier = Modifier.padding(start = 10.dp,top = 8.dp, end = 8.dp)) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Box(modifier = Modifier.padding(start = 10.dp, top = 8.dp, end = 8.dp)) {
                             Card(
                                 modifier = Modifier
                                     .padding(10.dp)
@@ -121,17 +131,15 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                                 backgroundColor = Color.LightGray
                             ) {
                                 Column {
-                                        Text(
-                                            text = item.text, modifier = Modifier
-                                                .padding(8.dp)
-                                        )
-
-
-                                        Text(
-                                            text = item.created.substring(12, 16), modifier = Modifier
-                                                .align(Alignment.End)
-                                                .padding(start = 8.dp, bottom = 4.dp, end = 5.dp)
-                                        )
+                                    Text(
+                                        text = item.text, modifier = Modifier
+                                            .padding(8.dp)
+                                    )
+                                    Text(
+                                        text = item.created.substring(12, 16), modifier = Modifier
+                                            .align(Alignment.End)
+                                            .padding(start = 8.dp, bottom = 4.dp, end = 5.dp)
+                                    )
 
                                 }
                             }
@@ -139,7 +147,12 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                     }
                 }
             }
+
+
         }
+
+    }
+
         var textFieldValue by remember { mutableStateOf("") }
         val isTextFieldEmpty = textFieldValue.isEmpty()
 
@@ -160,6 +173,7 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                     value = textFieldValue,
                     onValueChange = { newValue ->
                         textFieldValue = newValue
+                        loginViewModel.updateTypingStatus(true)
                     },
                     modifier = Modifier.weight(1f),
                     placeholder = { Text(text = "Type Your Message Here") }
@@ -168,6 +182,7 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                     onClick = {
 //                        loginViewModel.chatList.add(ReceiveDataClass("Constant","asfffffffffffaaaaaaaaaaaaaafafa",loginViewModel.user_name))
                         chatWebSocket.sendMessage(textFieldValue)
+                        loginViewModel.updateTypingStatus(false)
                         postSenderMessage(
                             ctx,
                             title,
@@ -188,9 +203,12 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                 }
             }
         }
+    if (loginViewModel.isLoading.value == true){
+        LoadingView()
+    }
         Text(text = result.value)
     }
-}
+
 
 
 private fun postSenderMessage(

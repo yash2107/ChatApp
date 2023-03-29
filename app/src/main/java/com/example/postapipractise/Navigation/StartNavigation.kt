@@ -1,5 +1,6 @@
 package com.example.postapipractise.Navigation
 
+import android.content.SharedPreferences
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -23,13 +24,13 @@ import okhttp3.WebSocket
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun StartNavigation(navController: NavHostController = rememberNavController()){
+fun StartNavigation(sharedPreferences: SharedPreferences,navController: NavHostController = rememberNavController()){
     val loginViewModel:LoginViewModel = viewModel()
     val chatWebSocket = ChatWebSocket(loginViewModel)
 //    ChatWebSocket(loginViewModel)
     NavHost(navController = navController, startDestination = NavigationId.LoginScreen.route){
         composable(NavigationId.LoginScreen.route){
-            LoginScreen(navController,loginViewModel)
+            LoginScreen(navController,loginViewModel,sharedPreferences)
         }
 
 //        composable(NavigationId.SignupPostData.route){
@@ -40,13 +41,13 @@ fun StartNavigation(navController: NavHostController = rememberNavController()){
             SignUpScaff(navController)
         }
         composable(NavigationId.History.route){
-            History(navController,loginViewModel)
+            History(navController,loginViewModel,sharedPreferences)
         }
         composable(NavigationId.ChatRoomScreen.route){
             ChatRoomScreen( navController,loginViewModel,chatWebSocket)
         }
         composable(NavigationId.QuestionList.route){
-//            QuestionList(navController)
+//            QuestionList()
         }
     }
 }

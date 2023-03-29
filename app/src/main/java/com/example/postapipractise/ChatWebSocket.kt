@@ -14,6 +14,8 @@ import java.net.SocketException
 class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListener(){
     private var webSocket: WebSocket
 
+    private var isTyping = false
+
     init {
         val request = Request.Builder().url("wss://api.chatengine.io/chat/?projectID=52690bdb-3b85-4b96-9081-27fa9b4dc10e&chatID=153464&accessKey=ca-529db72b-f253-4bdb-9be1-8719383ecc2a").build()
         val client = OkHttpClient()
@@ -46,8 +48,16 @@ class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListene
             loginViewModel.updateMessageList((loginViewModel.messageList.value + message) as List<ReceiveDataClass>)
             Log.d("MYTAG", "onMessage: ${receivedMessage} ${loginViewModel.chatList.size} ")
             }
-
-
+//        if (action =="is_online"){
+//            val userTyping = json.getJSONObject("data").getString("user_typing")
+//            if (userTyping == loginViewModel.user_name){
+//                isTyping = true
+//            }
+//            else {
+//                isTyping = false
+//            }
+//            loginViewModel.updateTypingStatus(isTyping)
+//        }
     }
 
     fun onClose(webSocket: WebSocket, code: Int, reason: String) {
@@ -71,6 +81,7 @@ class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListene
     fun sendMessage(message: String) {
         webSocket.send(message)
     }
+
 
     fun closeWebSocket() {
         webSocket.close(1000, "Closing WebSocket.")

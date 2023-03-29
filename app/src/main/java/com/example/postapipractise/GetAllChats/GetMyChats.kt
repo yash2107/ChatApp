@@ -1,7 +1,6 @@
 package com.example.postapipractise.GetAllChats
 
 import com.example.postapipractise.GetAllChats.ChatDataModel.GetChatsDataClass
-import com.example.postapipractise.Login.Network.url
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -39,7 +38,7 @@ class GetMyChatsClass(username:String,password:String){
             .build()
 
         val retrofit= Retrofit.Builder()
-            .baseUrl(url)
+            .baseUrl("https://api.chatengine.io/")
             .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build().create( GetMyChats::class.java)

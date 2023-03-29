@@ -1,6 +1,7 @@
 package com.example.postapipractise.Login.LoginScreen
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,7 +30,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.postapipractise.Login.LoginDataClass.LoginData
 import com.example.postapipractise.Login.LoginState
-import com.example.postapipractise.Login.ViewModel.LoginViewModel
+import com.example.postapipractise.Login.ViewModel.*
 import com.example.postapipractise.Navigation.NavigationId
 import com.example.postapipractise.R
 import com.example.postapipractise.ui.theme.LightPurple
@@ -39,8 +40,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+
+
 @Composable
-fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel){
+fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,sharedPreferences:SharedPreferences){
 
     var Username = remember{ mutableStateOf("") }
     var Password = remember{ mutableStateOf("") }
@@ -50,15 +53,32 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel){
 
     val isFieldsFilled = Username.value.isNotBlank() && Password.value.isNotBlank()
 
-//    var loginState by remember { mutableStateOf<LoginState>(LoginState.Loading) }
+//    var loginState by remember { mutableStateOf<LoginState>(LoginState.Loading) }xl
     val ctx = LocalContext.current
 
+    val email = sharedPreferences.getString("USERNAME", "").toString()
+    val secrett = sharedPreferences.getString("SECRET", "").toString()
+
+    println("******************* $email")
+
+//    if (email.isNotBlank()){
+//        loginViewModel.user_name = email
+//        loginViewModel.password = secrett
+//        getDetails(ctx,result,secret,navController,loginViewModel)
+//    }
+
+
+
     Box(
-        modifier = Modifier.fillMaxSize().background(brush = Brush.verticalGradient(
-            colors = listOf(Color.White, Purple200),
-            startY = 500f,
-            endY = 3500f
-        )),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color.White, Purple200),
+                    startY = 500f,
+                    endY = 3500f
+                )
+            ),
         contentAlignment = Alignment.Center
     ){
 //        Image(painter = painterResource(id = R.drawable.logo ) , contentDescription = "", modifier = Modifier.fillMaxSize(),
@@ -151,7 +171,8 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel){
                         contentColor = Color.White
                     ),
                     onClick = {
-                        getDetails(ctx,result,secret,navController,loginViewModel)
+                        loginViewModel.isLoading.value = true
+                        getDetails(ctx,result,secret,navController,loginViewModel,sharedPreferences)
                     }, enabled = isFieldsFilled) {
                     Text(text = "Login")
                 }
@@ -170,8 +191,12 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel){
                             navController.navigate(NavigationId.SignUpScaff.route)
                         })
                 }
+                if (loginViewModel.isLoading.value==true){
+                    LoadingView()
+                }
             }
         }
+
     }
 }
 
@@ -181,7 +206,8 @@ private fun getDetails(
     result: MutableState<String>,
     secret: MutableState<String>,
     navController: NavController,
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
+    sharedPreferences: SharedPreferences
 ){
     val authenticationApi = loginViewModel.AuthenticateUser()
 
@@ -199,13 +225,14 @@ private fun getDetails(
             secret.value = model?.secret.toString()
             loginViewModel.UserData=model
             if(model?.is_authenticated==true){
-//                navController.navigate(NavigationItems.UserScreen.route)
                 navController.navigate(NavigationId.History.route)
                 Toast.makeText(ctx,"Logged in Correctly",Toast.LENGTH_LONG).show()
             }
             else{
                 Toast.makeText(ctx,"No user Found",Toast.LENGTH_LONG).show()
+                loginViewModel.isLoading.value = false
             }
+            loginViewModel.isLoading.value = false
             println("/////////////////////////////////////////////////////${secret.value}")
 
         }
