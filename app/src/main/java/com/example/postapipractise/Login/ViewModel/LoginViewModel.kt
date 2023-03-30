@@ -16,6 +16,7 @@ import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.postapipractise.ChatRoom.DataModel.ChatRoomApi
 import com.example.postapipractise.ChatRoom.DataModel.ChatRoomClass
 import com.example.postapipractise.ChatRoom.DataModel.ChatRoomDataModel
@@ -29,9 +30,14 @@ import com.example.postapipractise.Message.MessageDataClass
 import com.example.postapipractise.Message.ReceiveMessage.ReceiveDataClass
 import com.example.postapipractise.Message.SendMessage.MessageApi
 import com.example.postapipractise.Message.SendMessage.MessageClass
+import com.example.postapipractise.TypingStatus.TypingApi
+import com.example.postapipractise.TypingStatus.TypingClass
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @SuppressLint("MutableCollectionMutableState")
 class LoginViewModel: ViewModel() {
@@ -41,7 +47,7 @@ class LoginViewModel: ViewModel() {
     val initial = LoginData("", "", false)
     var UserData: LoginData? by mutableStateOf(initial)
 
-    val initail2 = ChatRoomDataModel("",false)
+    val initail2 = ChatRoomDataModel("",false, listOf("user2"))
     var chatData: ChatRoomDataModel? by mutableStateOf(initail2)
 
     var isLoading = mutableStateOf(false)
@@ -93,16 +99,22 @@ class LoginViewModel: ViewModel() {
         return  msgApiService
     }
 
-    // Other properties and functions
+    val istyping = mutableStateOf(false)
+    val istypinguser= mutableStateOf("")
 
-        private val _isTyping = MutableLiveData<Boolean>(false)
-        val isTyping: LiveData<Boolean>
-            get() = _isTyping
-
-    fun updateTypingStatus(isTyping: Boolean) {
-        _isTyping.value = isTyping
+    @SuppressLint("SuspiciousIndentation")
+    fun IsUserTyping(): TypingApi {
+        val apiService= TypingClass(user_name.value,password.value,chatId.toString()).getTypingInstance()
+        return apiService
     }
-
+    fun starttyping(){
+        viewModelScope.launch {
+            withContext(Dispatchers.Default){
+                delay(2000L)
+            }
+            istyping.value=false
+        }
+    }
 }
 
 

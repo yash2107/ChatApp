@@ -61,13 +61,12 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
     val resultResponse = remember { mutableStateOf("") }
     val editor: SharedPreferences.Editor = sharedPreferences.edit()
 
-
-
+    getChatHistory(loginViewModel)
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
-                title = { Text(text = "Chats") },
+                title = { Text(text = "Welcome ${loginViewModel.user_name.value}") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -95,7 +94,7 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    postChatRoom(ctx, title.value, result, loginViewModel, navController)
+//                    postChatRoom(ctx, title.value, result, loginViewModel, navController)
                     navController.navigate(NavigationId.QuestionList.route)
                 }
             ) {
@@ -109,10 +108,9 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
                 .background(Color.White)
                 .padding(horizontal = 16.dp, vertical = 8.dp),
         ) {
-            itemsIndexed(loginViewModel.allChats) { _, item ->
+            itemsIndexed(loginViewModel.allChats) { lastindex, item ->
                 val time = item.created.subSequence(11, 16)
-                val cardName = if (title.value == "user1") "user2" else "user1"
-
+                val cardName = if(loginViewModel.user_name.value == "user2") item.title else "user2"
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -172,7 +170,7 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
 }
 
 
-private fun postChatRoom(
+fun postChatRoom(
     ctx:Context,
     title:String,
     result: MutableState<String>,
@@ -180,7 +178,7 @@ private fun postChatRoom(
     navController:NavController
 ){
     val chatRoomApi = loginViewModel.createRoom()
-    val chatRoomDataModel =ChatRoomDataModel(title,false)
+    val chatRoomDataModel =ChatRoomDataModel(title,false, listOf("user2"))
 
     val call: Call<ChatRoomDataModel?>? =chatRoomApi.postChatRoom(chatRoomDataModel)
 

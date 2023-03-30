@@ -12,19 +12,18 @@ import retrofit2.http.POST
 interface TypingApi {
 
     @POST("typing/")
-    fun notifyTyping(): Call<Void>
+    fun notifyTyping(): Call<TypingModel?>?
 }
 
 
-class TypingClass(username:String,password:String) {
-    private val username=username
-    private val password=password
+class TypingClass(val username:String, val password:String,val chatId:String) {
+
 
     fun getTypingInstance(): TypingApi {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
 
-        val url = "https://api.chatengine.io/chats/4544444/"
+        val url = "https://api.chatengine.io/chats/${chatId}/"
 
         val httpClient = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)

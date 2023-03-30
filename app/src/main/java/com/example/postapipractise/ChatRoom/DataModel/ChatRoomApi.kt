@@ -11,9 +11,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.PUT
 
 interface ChatRoomApi {
-    @POST("chats/")
+    @PUT("chats/")
     fun postChatRoom(@Body chatRoomDataModel: ChatRoomDataModel?): Call<ChatRoomDataModel?>?
 }
 

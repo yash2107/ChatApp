@@ -13,11 +13,8 @@ import java.net.SocketException
 
 class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListener(){
     private var webSocket: WebSocket
-
-    private var isTyping = false
-
     init {
-        val request = Request.Builder().url("wss://api.chatengine.io/chat/?projectID=52690bdb-3b85-4b96-9081-27fa9b4dc10e&chatID=153464&accessKey=ca-529db72b-f253-4bdb-9be1-8719383ecc2a").build()
+        val request = Request.Builder().url("wss://api.chatengine.io/chat/?projectID=52690bdb-3b85-4b96-9081-27fa9b4dc10e&chatID=${loginViewModel.chatId}&accessKey=${loginViewModel.accesskey}").build()
         val client = OkHttpClient()
         webSocket = client.newWebSocket(request, this)
     }
@@ -48,16 +45,12 @@ class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListene
             loginViewModel.updateMessageList((loginViewModel.messageList.value + message) as List<ReceiveDataClass>)
             Log.d("MYTAG", "onMessage: ${receivedMessage} ${loginViewModel.chatList.size} ")
             }
-//        if (action =="is_online"){
-//            val userTyping = json.getJSONObject("data").getString("user_typing")
-//            if (userTyping == loginViewModel.user_name){
-//                isTyping = true
-//            }
-//            else {
-//                isTyping = false
-//            }
-//            loginViewModel.updateTypingStatus(isTyping)
-//        }
+        if (action =="is_typing") {
+            val data=json.getJSONObject("data")
+            val name=data.getString("person")
+            loginViewModel.istyping.value=true
+            loginViewModel.istypinguser.value= name.toString()
+        }
     }
 
     fun onClose(webSocket: WebSocket, code: Int, reason: String) {
@@ -69,7 +62,7 @@ class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListene
             Log.d("MYTAG", "WebSocket failure: Broken pipe")
             // Reconnect the WebSocket here
             val request = Request.Builder()
-                .url("wss://api.chatengine.io/chat/?projectID=52690bdb-3b85-4b96-9081-27fa9b4dc10e&chatID=153464&accessKey=ca-529db72b-f253-4bdb-9be1-8719383ecc2a")
+                .url("wss://api.chatengine.io/chat/?projectID=52690bdb-3b85-4b96-9081-27fa9b4dc10e&chatID=${loginViewModel.chatId}&accessKey=${loginViewModel.accesskey}")
                 .build()
             val client = OkHttpClient()
             this.webSocket = client.newWebSocket(request, this)
@@ -87,5 +80,3 @@ class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListene
         webSocket.close(1000, "Closing WebSocket.")
     }
 }
-
-

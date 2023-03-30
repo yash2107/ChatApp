@@ -28,6 +28,7 @@ import com.example.postapipractise.ChatWebSocket
 import com.example.postapipractise.Login.ViewModel.LoadingView
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
 import com.example.postapipractise.Message.MessageDataClass
+import com.example.postapipractise.TypingStatus.TypingModel
 import com.example.postapipractise.ui.theme.Purple500
 import com.example.postapipractise.ui.theme.senderColor
 import retrofit2.Call
@@ -49,15 +50,18 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
     val messageList = messageListState.value
     Text(text = messageList.size.toString())
 
-    val isTyping by loginViewModel.isTyping.observeAsState(false)
-
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                        if(isTyping) "Typing" else "Chat"
-//                    Text(text = "Chat Room")
+                    if(loginViewModel.istyping.value&&loginViewModel.user_name.value!=loginViewModel.istypinguser.value){
+                        Text(text = " is typing")
+                        loginViewModel.starttyping()
+                    }
+                    else{
+                    Text(text = if (loginViewModel.user_name.value=="user2") "" else "user2")
+                    }
                 },
 
                 navigationIcon = {
@@ -173,16 +177,14 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                     value = textFieldValue,
                     onValueChange = { newValue ->
                         textFieldValue = newValue
-                        loginViewModel.updateTypingStatus(true)
+                        IsTypingHelpingFunction(ctx,loginViewModel)
                     },
                     modifier = Modifier.weight(1f),
                     placeholder = { Text(text = "Type Your Message Here") }
                 )
                 IconButton(
                     onClick = {
-//                        loginViewModel.chatList.add(ReceiveDataClass("Constant","asfffffffffffaaaaaaaaaaaaaafafa",loginViewModel.user_name))
                         chatWebSocket.sendMessage(textFieldValue)
-                        loginViewModel.updateTypingStatus(false)
                         postSenderMessage(
                             ctx,
                             title.value,
@@ -191,7 +193,7 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                             loginViewModel
                         )
                         textFieldValue = ""
-                        println( "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ChatRoomScreen: ${loginViewModel.chatList[loginViewModel.chatList.size-1]} ")
+//                        println( "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ChatRoomScreen: ${loginViewModel.chatList[loginViewModel.chatList.size-1]} ")
                     },
                     enabled = !isTextFieldEmpty
                 ) {
@@ -244,6 +246,27 @@ private fun postSenderMessage(
 
     }
     )
+}
+
+fun IsTypingHelpingFunction(
+    context: Context,
+    loginViewModel: LoginViewModel
+)
+{
+    val retrofitAPI= loginViewModel.IsUserTyping()
+    val call: Call<TypingModel?>? = retrofitAPI.notifyTyping()
+    call!!.enqueue(object : Callback<TypingModel?> {
+        override fun onResponse(call: Call<TypingModel?>, response: Response<TypingModel?>) {
+            val model: TypingModel? = response.body()
+            val resp =
+                "Response Code : " + response.code()
+//            loginViewModel.result=resp
+        }
+        override fun onFailure(call: Call<TypingModel?>, t: Throwable) {
+            var temp = "Error found is : " + t.message
+            Toast.makeText(context,temp, Toast.LENGTH_SHORT).show()
+        }
+    })
 }
 
 

@@ -7,20 +7,36 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.*
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.postapipractise.Navigation.StartNavigation
+import com.example.postapipractise.QuestionRoom.QuestionList
+import com.example.postapipractise.QuestionRoom.QuestionListing
+import com.example.postapipractise.QuestionRoom.QuestionViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class MainActivity : ComponentActivity() {
     lateinit var sharedPreferences:SharedPreferences
+//    val questionViewModel by viewModels<QuestionViewModel>()
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
+//        lifecycleScope.launch {
+//            withContext(Dispatchers.IO){
+//
+//                QuestionListing(questionViewModel)
+//            }
+//        }
         super.onCreate(savedInstanceState)
         setContent {
             sharedPreferences = getSharedPreferences("UserDetails", Context.MODE_PRIVATE)
@@ -33,6 +49,7 @@ class MainActivity : ComponentActivity() {
             username.value = sharedPreferences.getString("USERNAME", "").toString()
             pwd.value = sharedPreferences.getString("SECRET", "").toString()
             StartNavigation(sharedPreferences)
+//            QuestionList(questionViewModel)
         }
     }
 }
