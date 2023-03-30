@@ -1,16 +1,12 @@
 package com.example.postapipractise.ChatRoom.DataModel
 
 
-import com.example.postapipractise.Login.Network.AuthenticationApi
-import com.example.postapipractise.Login.Network.url
-import com.example.postapipractise.Login.ViewModel.LoginViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
-import retrofit2.http.POST
 import retrofit2.http.PUT
 
 interface ChatRoomApi {
@@ -18,12 +14,7 @@ interface ChatRoomApi {
     fun postChatRoom(@Body chatRoomDataModel: ChatRoomDataModel?): Call<ChatRoomDataModel?>?
 }
 
-class ChatRoomClass(username:String,password:String){
-
-    var username=username
-    var password=password
-
-
+class ChatRoomClass(var username:String,var password:String){
     fun postInstance(): ChatRoomApi {
         val loggingInterceptor= HttpLoggingInterceptor()
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -36,7 +27,6 @@ class ChatRoomClass(username:String,password:String){
                     .addHeader("Project-ID", "52690bdb-3b85-4b96-9081-27fa9b4dc10e")
                     .addHeader("User-Name", username)
                     .addHeader("User-Secret", password)
-                    //.addHeader("Accept", "application/json")
                     .build()
                 chain.proceed(request)
             }

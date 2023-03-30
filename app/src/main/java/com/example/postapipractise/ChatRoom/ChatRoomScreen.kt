@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.postapipractise.ChatWebSocket
 import com.example.postapipractise.Login.ViewModel.LoadingView
@@ -72,87 +73,129 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
             )
         }
     ){
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth(1f)
-                .fillMaxHeight(0.9f)
-                .background(
-                    brush = Brush.verticalGradient(
-                        listOf(Color.White, Purple500),
-                        startY = 1000f,
-                        endY = 4500f
-                    )
-                ),
-            reverseLayout = true
-        ) {
-            itemsIndexed(loginViewModel.chatList.sortedByDescending { it.created }) { index, item ->
-                if (item.sender_username == loginViewModel.user_name.value) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.End,
-                    ) {
-                        Box(modifier = Modifier.padding(start = 40.dp, top = 8.dp, end = 8.dp)) {
-                            Card(
-                                modifier = Modifier
-                                    .padding(5.dp)
-                                    .clip(RoundedCornerShape(15.dp, 0.dp, 15.dp, 15.dp)),
-                                backgroundColor = senderColor,
+        if (loginViewModel.chatList.size == 0) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+//                    .height(500.dp)
+//                    .width(800.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            listOf(Color.White, Purple500),
+                            startY = 1000f,
+                            endY = 4500f
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ){
+                Text(text = "No Chat History",
+                    fontSize = 20.sp)
+            }
 
-                                ) {
-                                Column(
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .fillMaxHeight(0.9f)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            listOf(Color.White, Purple500),
+                            startY = 1000f,
+                            endY = 4500f
+                        )
+                    ),
+                reverseLayout = true
+            ) {
+                itemsIndexed(loginViewModel.chatList.sortedByDescending { it.created }) { index, item ->
+                    val date = item.created.subSequence(8, 10)
+                    var month = item.created.subSequence(5, 7)
+                    val year = item.created.subSequence(0, 4)
+                    if (item.sender_username == loginViewModel.user_name.value) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.End,
+                        ) {
+                            Box(
+                                modifier = Modifier.padding(
+                                    start = 40.dp,
+                                    top = 8.dp,
+                                    end = 8.dp
+                                )
+                            ) {
+                                Card(
+                                    modifier = Modifier
+                                        .padding(5.dp)
+                                        .clip(RoundedCornerShape(15.dp, 0.dp, 15.dp, 15.dp)),
+                                    backgroundColor = senderColor,
+
+                                    ) {
+                                    Column(
 //                                        Modifier.fillMaxWidth(),
 //                                        horizontalAlignment = Alignment.End
-                                ) {
-                                    Text(
-                                        text = item.text,
-                                        modifier = Modifier
-                                            .padding(8.dp)
-                                        //.align(Alignment.Start)
-                                    )
-                                    Text(
-                                        text = item.created.substring(12, 16),
-                                        modifier = Modifier
-                                            .align(Alignment.End)
-                                            .padding(start = 8.dp, end = 8.dp, bottom = 4.dp)
-                                    )
+                                    ) {
+                                        Text(
+                                            text = item.text,
+                                            modifier = Modifier
+                                                .padding(8.dp)
+                                                .align(Alignment.End)
+                                        )
+                                        Text(
+                                            text = "$date-$month-$year",
+                                            modifier = Modifier.align(Alignment.End)
+                                                .padding(start = 8.dp, end = 8.dp, bottom = 4.dp)
+                                        )
+                                        Text(
+                                            text = item.created.substring(12, 16),
+                                            modifier = Modifier
+                                                .align(Alignment.End)
+                                                .padding(start = 8.dp, end = 8.dp, bottom = 4.dp)
+                                        )
 
+                                    }
                                 }
                             }
                         }
-                    }
 
 
-                } else {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Box(modifier = Modifier.padding(start = 10.dp, top = 8.dp, end = 8.dp)) {
-                            Card(
-                                modifier = Modifier
-                                    .padding(10.dp)
-                                    .clip(RoundedCornerShape(0.dp, 15.dp, 15.dp, 15.dp)),
-                                backgroundColor = Color.LightGray
+                    } else {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Box(
+                                modifier = Modifier.padding(
+                                    start = 10.dp,
+                                    top = 8.dp,
+                                    end = 8.dp
+                                )
                             ) {
-                                Column {
-                                    Text(
-                                        text = item.text, modifier = Modifier
-                                            .padding(8.dp)
-                                    )
-                                    Text(
-                                        text = item.created.substring(12, 16), modifier = Modifier
-                                            .align(Alignment.End)
-                                            .padding(start = 8.dp, bottom = 4.dp, end = 5.dp)
-                                    )
+                                Card(
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                        .clip(RoundedCornerShape(0.dp, 15.dp, 15.dp, 15.dp)),
+                                    backgroundColor = Color.LightGray
+                                ) {
+                                    Column {
+                                        Text(
+                                            text = item.text, modifier = Modifier
+                                                .padding(8.dp)
+                                        )
+                                        Text(
+                                            text = item.created.substring(12, 16),
+                                            modifier = Modifier
+                                                .align(Alignment.End)
+                                                .padding(start = 8.dp, bottom = 4.dp, end = 5.dp)
+                                        )
 
+                                    }
                                 }
                             }
                         }
                     }
                 }
+
+
             }
-
-
         }
 
     }
@@ -174,7 +217,9 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextField(
+
                     value = textFieldValue,
+                    maxLines = 2,
                     onValueChange = { newValue ->
                         textFieldValue = newValue
                         IsTypingHelpingFunction(ctx,loginViewModel)

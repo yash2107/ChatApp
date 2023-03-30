@@ -33,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.postapipractise.ChatRoom.DataModel.ChatRoomDataModel
 import com.example.postapipractise.GetAllChats.ChatDataModel.GetChatsDataClass
@@ -102,71 +103,85 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
             }
         },
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White)
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-        ) {
-            itemsIndexed(loginViewModel.allChats) { lastindex, item ->
-                val time = item.created.subSequence(11, 16)
-                val cardName = if(loginViewModel.user_name.value == "user2") item.title else "user2"
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                        .clickable (onClick = {
-                            loginViewModel.chatId = item.id
-                            loginViewModel.accesskey = item.access_key
-                            navController.navigate(NavigationId.ChatRoomScreen.route)
-                            loginViewModel.isLoading.value=true
-                            getSendMessage(resultResponse,loginViewModel,navController)
-                        }
-                        )
-                        ,
-                    elevation = 4.dp,
-                    shape = RoundedCornerShape(8.dp),
-                    backgroundColor = Color.White
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp)
+        if (loginViewModel.allChats.size != 0) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+            ) {
+                itemsIndexed(loginViewModel.allChats) { lastindex, item ->
+                    val time = item.created.subSequence(11, 16)
+                    val cardName =
+                        if (loginViewModel.user_name.value == "user2") item.title else "user2"
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp)
+                            .clickable(onClick = {
+                                loginViewModel.chatId = item.id
+                                loginViewModel.accesskey = item.access_key
+                                navController.navigate(NavigationId.ChatRoomScreen.route)
+                                loginViewModel.isLoading.value = true
+                                getSendMessage(resultResponse, loginViewModel, navController)
+                            }
+                            ),
+                        elevation = 4.dp,
+                        shape = RoundedCornerShape(8.dp),
+                        backgroundColor = Color.White
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(horizontal = 8.dp)
-                                .weight(1f)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp)
                         ) {
+                            Column(
+                                modifier = Modifier
+                                    .padding(horizontal = 8.dp)
+                                    .weight(1f)
+                            ) {
+                                Text(
+                                    text = cardName,    /*item.people.firstOrNull()?.person?.username ?: ""*/
+                                    style = MaterialTheme.typography.h6,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = item.last_message.text,
+                                    style = MaterialTheme.typography.body1,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = Color.Gray
+                                )
+                            }
                             Text(
-                                text =  cardName,    /*item.people.firstOrNull()?.person?.username ?: ""*/
-                                style = MaterialTheme.typography.h6,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Black
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Text(
-                                text = item.last_message.text,
+                                text = time.toString(),
                                 style = MaterialTheme.typography.body1,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                color = Color.Gray
+                                color = Color.Gray,
+                                modifier = Modifier.padding(horizontal = 8.dp)
                             )
                         }
-                        Text(
-                            text = time.toString(),
-                            style = MaterialTheme.typography.body1,
-                            color = Color.Gray,
-                            modifier = Modifier.padding(horizontal = 8.dp)
-                        )
                     }
                 }
             }
+            if (loginViewModel.isLoading.value == true) {
+                LoadingView()
+            }
         }
-        if (loginViewModel.isLoading.value == true){
-            LoadingView()
+        else{
+            Box(
+                modifier = Modifier.height(550.dp)
+                    .width(800.dp)
+                    .padding(top=180.dp, start = 50.dp, end = 50.dp)
+                    .background(color = Color.LightGray
+                        ,shape = RoundedCornerShape(16.dp)),
+                contentAlignment = Alignment.Center,
+            ){
+                Text(text = "No Chats Available",
+                    fontSize = 20.sp)
+            }
         }
     }
-
 }
 
 

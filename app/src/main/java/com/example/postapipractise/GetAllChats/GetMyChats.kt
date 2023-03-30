@@ -14,11 +14,7 @@ interface GetMyChats {
     fun getChats(): Call<List<GetChatsDataClass>?>?
 }
 
-class GetMyChatsClass(username:String,password:String){
-
-    var username=username
-    var password=password
-
+class GetMyChatsClass(val username:String,val password:String){
 
     fun getMsgInstance(): GetMyChats {
         val loggingInterceptor= HttpLoggingInterceptor()
