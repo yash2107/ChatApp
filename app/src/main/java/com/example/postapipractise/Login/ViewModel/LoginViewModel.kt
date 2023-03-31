@@ -120,7 +120,7 @@ fun LoadingView() {
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 500.dp)
+//            .padding(top = 500.dp)
     ) {
         CircularProgressIndicator(color = MaterialTheme.colors.primary)
     }

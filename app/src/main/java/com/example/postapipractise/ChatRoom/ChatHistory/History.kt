@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -46,6 +47,7 @@ import com.example.postapipractise.Message.ReceiveMessage.ReceiveDataClass
 import com.example.postapipractise.Navigation.NavigationId
 import com.example.postapipractise.QuestionRoom.QuestionViewModel
 import com.example.postapipractise.ui.theme.LightPurple
+import com.example.postapipractise.ui.theme.LightRed
 import com.example.postapipractise.ui.theme.Purple500
 import com.example.postapipractise.ui.theme.Purple700
 import retrofit2.Call
@@ -67,6 +69,7 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
         topBar = {
             TopAppBar(
                 title = { Text(text = "Welcome ${loginViewModel.user_name.value}") },
+                backgroundColor = Purple500,
 //                navigationIcon = {
 //                    IconButton(onClick = { navController.popBackStack() }) {
 //                        Icon(
@@ -126,52 +129,62 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
                         elevation = 4.dp,
                         shape = RoundedCornerShape(8.dp),
                         backgroundColor = Color.White
+
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 12.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 12.dp)
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .size(60.dp)
+                                    .size(48.dp)
                                     .background(LightPurple, CircleShape)
                             ) {
-                                Image(
-                                    Icons.Default.Person,
+                                Icon(
+                                    imageVector = Icons.Default.Person,
                                     contentDescription = "",
-                                    modifier = Modifier.fillMaxSize()
+                                    tint = Color.White,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(12.dp)
                                 )
                             }
 
+                            Spacer(modifier = Modifier.width(12.dp))
 
-                            Spacer(modifier = Modifier.width(10.dp))
                             Column(
                                 modifier = Modifier
-                                    .padding(horizontal = 8.dp)
                                     .weight(1f)
+                                    .padding(vertical = 8.dp)
                             ) {
                                 Text(
                                     text = item.title,
-                                    style = MaterialTheme.typography.h6,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = Purple700
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Purple700,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text = item.last_message.text,
-                                    style = MaterialTheme.typography.body1,
+                                    style = MaterialTheme.typography.body1.copy(fontSize = 16.sp),
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     color = Color.Gray
                                 )
                             }
+
                             Text(
                                 text = time.toString(),
-                                style = MaterialTheme.typography.body1,
+                                style = MaterialTheme.typography.body1.copy(fontSize = 14.sp),
                                 color = Color.Gray,
-                                modifier = Modifier.padding(horizontal = 8.dp)
+                                modifier = Modifier.padding(bottom = 30.dp)
                             )
                         }
+
                     }
                 }
             }

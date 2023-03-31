@@ -22,15 +22,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.postapipractise.WebSocket.ChatWebSocket
 import com.example.postapipractise.Login.ViewModel.LoadingView
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
 import com.example.postapipractise.Message.MessageModel.MessageDataClass
 import com.example.postapipractise.TypingStatus.TypingModel
-import com.example.postapipractise.ui.theme.Purple500
-import com.example.postapipractise.ui.theme.senderColor
+import com.example.postapipractise.ui.theme.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -86,7 +87,7 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                         brush = Brush.verticalGradient(
                             listOf(Color.White, Purple500),
                             startY = 1000f,
-                            endY = 4500f
+                            endY = 4000f
                         )
                     ),
                 reverseLayout = true
@@ -191,7 +192,12 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
             }
         }
         else{
-            Text(text = "No Previous Chat")
+            Box(modifier = Modifier.fillMaxSize(1f), contentAlignment = Alignment.Center) {
+                Card(modifier = Modifier.padding(16.dp), elevation = 8.dp) {
+                    Text(text = "No Previous Chat", fontSize = 24.sp, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                }
+            }
+
         }
 
         Row(
@@ -208,7 +214,12 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                     IsTypingHelpingFunction(ctx,loginViewModel)
                 },
                 modifier = Modifier.weight(1f),
-                placeholder = { Text(text = "Type Your Message Here") }
+                placeholder = { Text(text = "Type Your Message Here") },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedLabelColor = Color.Magenta,
+                    focusedBorderColor = Purple500,
+                    cursorColor = Purple500
+                )
             )
             IconButton(
                 onClick = {
@@ -228,7 +239,7 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                 Icon(
                     imageVector = Icons.Filled.Send,
                     contentDescription = "",
-                    tint = if (isTextFieldEmpty) Color.Gray else Color.Blue // Change the icon color based on whether the text field is empty or not
+                    tint = if (isTextFieldEmpty) Color.Gray else Purple500 // Change the icon color based on whether the text field is empty or not
                 )
             }
         }

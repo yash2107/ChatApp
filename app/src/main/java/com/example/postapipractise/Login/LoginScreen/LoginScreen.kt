@@ -171,6 +171,7 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,share
                             backgroundColor = Purple700,
                             contentColor = Color.White
                         ),
+
                         onClick = {
                             loginViewModel.isLoading.value = true
                             getDetails(ctx,Username.value,Password.value,result,secret,navController,loginViewModel,sharedPreferences)
