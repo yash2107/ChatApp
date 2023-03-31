@@ -83,4 +83,10 @@ dependencies {
 
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
 
+    implementation "androidx.compose.material:material-icons-core:$compose_ui_version"
+    // Jetpack Compose Testing
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
+    androidTestImplementation "androidx.compose.ui:ui-test:$compose_ui_version"
+
+
 }

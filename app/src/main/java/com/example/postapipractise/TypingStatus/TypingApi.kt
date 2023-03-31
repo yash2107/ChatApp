@@ -1,5 +1,6 @@
 package com.example.postapipractise.TypingStatus
 
+import com.example.postapipractise.Common.Constants
 import com.example.postapipractise.Message.SendMessage.MessageApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -29,7 +30,7 @@ class TypingClass(val username:String, val password:String,val chatId:String) {
             .addInterceptor(loggingInterceptor)
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
-                    .addHeader("Project-ID", "52690bdb-3b85-4b96-9081-27fa9b4dc10e")
+                    .addHeader("Project-ID", Constants.PROJECT_ID)
                     .addHeader("User-Name", username)
                     .addHeader("User-Secret", password)
                     .build()

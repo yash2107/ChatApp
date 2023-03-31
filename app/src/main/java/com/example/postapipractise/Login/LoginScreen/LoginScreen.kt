@@ -46,17 +46,18 @@ import retrofit2.Response
 @Composable
 fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,sharedPreferences:SharedPreferences){
 
-    var Username = loginViewModel.user_name
-    var Password = loginViewModel.password
+    val Username = loginViewModel.user_name
+    val Password = loginViewModel.password
 
-    var result = remember{ mutableStateOf("") }
-    var secret = remember{ mutableStateOf("") }
+    val result = remember{ mutableStateOf("") }
+    val secret = remember{ mutableStateOf("") }
 
     val isFieldsFilled = Username.value.isNotBlank() && Password.value.isNotBlank()
 
 //    var loginState by remember { mutableStateOf<LoginState>(LoginState.Loading) }xl
     val ctx = LocalContext.current
 
+    //Enable Shared Prefrences
     val email = sharedPreferences.getString("USERNAME", "").toString()
     val secrett = sharedPreferences.getString("SECRET", "").toString()
 
@@ -114,6 +115,7 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,share
                         modifier = Modifier.padding(vertical = 8.dp)
                     )
 
+                    //TextField to Enter Username
                     OutlinedTextField(
                         value = Username.value,
                         modifier = Modifier.fillMaxWidth(),
@@ -135,6 +137,7 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,share
                         textStyle = TextStyle(color = Purple700)
                     )
 
+                    //TextField for entering Password
                     OutlinedTextField(
                         value = Password.value,
                         modifier = Modifier.fillMaxWidth(),
@@ -197,9 +200,6 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,share
 
         }
     }
-
-
-
 }
 
 
@@ -230,10 +230,10 @@ private fun getDetails(
             loginViewModel.UserData=model
             if(model?.is_authenticated==true){
                 navController.navigate(NavigationId.History.route)
-                Toast.makeText(ctx,"Logged in Correctly",Toast.LENGTH_LONG).show()
+                Toast.makeText(ctx,"Logged in Correctly",Toast.LENGTH_SHORT).show()
             }
             else{
-                Toast.makeText(ctx,"No user Found",Toast.LENGTH_LONG).show()
+                Toast.makeText(ctx,"No user Found",Toast.LENGTH_SHORT).show()
                 loginViewModel.isLoading.value = false
             }
             loginViewModel.isLoading.value = false
@@ -245,7 +245,6 @@ private fun getDetails(
                 editor.apply()
             }
         }
-
         override fun onFailure(call: Call<LoginData?>?, t: Throwable) {
             result.value ="error "+t.message
         }

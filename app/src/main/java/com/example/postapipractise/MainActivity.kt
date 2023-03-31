@@ -27,16 +27,9 @@ import java.util.*
 
 class MainActivity : ComponentActivity() {
     lateinit var sharedPreferences:SharedPreferences
-//    val questionViewModel by viewModels<QuestionViewModel>()
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
-//        lifecycleScope.launch {
-//            withContext(Dispatchers.IO){
-//
-//                QuestionListing(questionViewModel)
-//            }
-//        }
         super.onCreate(savedInstanceState)
         setContent {
             sharedPreferences = getSharedPreferences("UserDetails", Context.MODE_PRIVATE)

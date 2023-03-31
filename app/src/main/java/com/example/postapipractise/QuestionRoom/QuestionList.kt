@@ -39,9 +39,14 @@ fun QuestionList(questionViewModel: QuestionViewModel,loginViewModel: LoginViewM
     val questions by questionViewModel.questions.observeAsState(emptyList())
 
     val ctx = LocalContext.current
-    val title = "FFFFFFFF"
+    var title by remember {
+        mutableStateOf("")
+    }
     val scaffoldState = rememberScaffoldState()
     val result = remember { mutableStateOf("") }
+    var isTalkToAgentVisible by remember { mutableStateOf(false) }
+
+
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -63,7 +68,6 @@ fun QuestionList(questionViewModel: QuestionViewModel,loginViewModel: LoginViewM
                 onClick = {
                     postChatRoom(ctx, title, result, loginViewModel, navController)
                     getChatHistory(loginViewModel)
-//                    navController.navigate(NavigationId.QuestionList.route)
                 }
             ) {
                 Icon(Icons.Filled.Person, contentDescription = "")
@@ -78,9 +82,13 @@ fun QuestionList(questionViewModel: QuestionViewModel,loginViewModel: LoginViewM
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)
-                        .clickable { expandedQuestion.value = question },
+                        .clickable {
+                            expandedQuestion.value = question
+                        },
                     elevation = 8.dp
-                ) {
+
+                )
+                { println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@${title}")
                     Text(
                         text = question.title,
                         fontWeight = FontWeight.Bold,
@@ -95,9 +103,11 @@ fun QuestionList(questionViewModel: QuestionViewModel,loginViewModel: LoginViewM
 
                 if (expandedQuestion.value == question) {
                     question.subQuestions.forEach { subQuestion ->
+                        loginViewModel.title = subQuestion.question
                         SubQuestion(
                             subQuestion = subQuestion,
-                            onSubQuestionClick = { expandedQuestion.value = question }
+                            onSubQuestionClick = { expandedQuestion.value = question },
+                            loginViewModel
                         )
                     }
                 }
@@ -115,7 +125,8 @@ fun QuestionList(questionViewModel: QuestionViewModel,loginViewModel: LoginViewM
 @Composable
 fun SubQuestion(
     subQuestion: SubQuestion,
-    onSubQuestionClick: () -> Unit
+    onSubQuestionClick: () -> Unit,
+    loginViewModel: LoginViewModel
 ) {
     var expandedSubQuestion by remember { mutableStateOf(false) }
 
@@ -160,9 +171,11 @@ fun SubQuestion(
 
                 if (expandedSubQuestion) {
                     subQuestion.subQuestions?.forEach { nestedSubQuestion ->
+                        loginViewModel.title = subQuestion.question
                         SubQuestion(
                             subQuestion = nestedSubQuestion,
-                            onSubQuestionClick = onSubQuestionClick
+                            onSubQuestionClick = onSubQuestionClick,
+                            loginViewModel
                         )
                     }
                 }

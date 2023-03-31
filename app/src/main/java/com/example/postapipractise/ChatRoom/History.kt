@@ -5,20 +5,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -26,10 +22,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -37,31 +31,25 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.postapipractise.ChatRoom.DataModel.ChatRoomDataModel
 import com.example.postapipractise.GetAllChats.ChatDataModel.GetChatsDataClass
-import com.example.postapipractise.GetAllChats.ChatDataModel.People
 import com.example.postapipractise.Login.ViewModel.LoadingView
-//import com.example.postapipractise.ChatWebSocket
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
 import com.example.postapipractise.MainActivity
-import com.example.postapipractise.Message.MessageDataClass
 import com.example.postapipractise.Message.ReceiveMessage.ReceiveDataClass
 import com.example.postapipractise.Navigation.NavigationId
-import com.example.postapipractise.R
-
-
+import com.example.postapipractise.QuestionRoom.QuestionViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "SuspiciousIndentation")
 @Composable
-fun History(navController: NavController, loginViewModel: LoginViewModel,sharedPreferences: SharedPreferences) {
+fun History(navController: NavController, loginViewModel: LoginViewModel,sharedPreferences: SharedPreferences,questionViewModel: QuestionViewModel) {
     val ctx = LocalContext.current
     val title = loginViewModel.user_name
     val scaffoldState = rememberScaffoldState()
     val result = remember { mutableStateOf("") }
     val resultResponse = remember { mutableStateOf("") }
     val editor: SharedPreferences.Editor = sharedPreferences.edit()
-
     getChatHistory(loginViewModel)
     Scaffold(
         scaffoldState = scaffoldState,
@@ -112,17 +100,16 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
             ) {
                 itemsIndexed(loginViewModel.allChats) { lastindex, item ->
                     val time = item.created.subSequence(11, 16)
-                    val cardName =
-                        if (loginViewModel.user_name.value == "user2") item.title else "user2"
+//                        if (loginViewModel.user_name.value == loginViewModel) item.title else "user2"
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp)
                             .clickable(onClick = {
-                                loginViewModel.chatId = item.id
-                                loginViewModel.accesskey = item.access_key
                                 navController.navigate(NavigationId.ChatRoomScreen.route)
                                 loginViewModel.isLoading.value = true
+                                loginViewModel.chatId = item.id
+                                loginViewModel.accesskey = item.access_key
                                 getSendMessage(resultResponse, loginViewModel, navController)
                             }
                             ),
@@ -140,7 +127,7 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
                                     .weight(1f)
                             ) {
                                 Text(
-                                    text = cardName,    /*item.people.firstOrNull()?.person?.username ?: ""*/
+                                    text = item.title,
                                     style = MaterialTheme.typography.h6,
                                     fontWeight = FontWeight.Bold,
                                     color = Color.Black
@@ -179,48 +166,16 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
             ){
                 Text(text = "No Chats Available",
                     fontSize = 20.sp)
+                if (loginViewModel.isLoading.value == true) {
+                    LoadingView()
+                }
             }
         }
     }
 }
 
 
-fun postChatRoom(
-    ctx:Context,
-    title:String,
-    result: MutableState<String>,
-    loginViewModel: LoginViewModel,
-    navController:NavController
-){
-    val chatRoomApi = loginViewModel.createRoom()
-    val chatRoomDataModel =ChatRoomDataModel(title,false, listOf("user2"))
 
-    val call: Call<ChatRoomDataModel?>? =chatRoomApi.postChatRoom(chatRoomDataModel)
-
-    call!!.enqueue(object: Callback<ChatRoomDataModel?>{
-        override fun onResponse(
-            call: Call<ChatRoomDataModel?>,
-            response: Response<ChatRoomDataModel?>
-        ) {
-            Toast.makeText(ctx,"Room Created",Toast.LENGTH_SHORT).show()
-            val model:ChatRoomDataModel? = response.body()
-            val resp = "Response Code: " +response.body() + "\n"+ "Title:" +model?.title + "\n"+ model?.is_direct_chat
-            result.value = resp
-            loginViewModel.chatData=model
-//            if(model?.is_direct_chat==false){
-//                navController.navigate(NavigationId.ChatRoomScreen.route)
-//                Toast.makeText(ctx,"Chat in",Toast.LENGTH_LONG).show()
-//            }
-            print("///////////////////////////////////$title")
-        }
-
-        override fun onFailure(call: Call<ChatRoomDataModel?>, t: Throwable) {
-            result.value = "Error "+ t.message
-        }
-
-    }
-    )
-}
 
 private fun getSendMessage(
     result: MutableState<String>,
@@ -242,6 +197,7 @@ private fun getSendMessage(
             }
             loginViewModel.isLoading.value =false
 
+
 //            loginViewModel.updateUIWithNewMessage(message = MessageDataClass(result.value))
 //            if (model != null) {
 //                loginViewModel.chatList= model
@@ -260,8 +216,6 @@ private fun getSendMessage(
 
 
 fun getChatHistory(
-//    context: Context,
-//    getApiResult: MutableState<String>,
     loginViewModel: LoginViewModel
 ) {
     val retrofitAPI = loginViewModel.getAllChats()
@@ -280,7 +234,7 @@ fun getChatHistory(
 
         }
         override fun onFailure(call: Call<List<GetChatsDataClass>?>, t: Throwable) {
-            //getApiResult.value="error "+t.message
+
         }
     })
 }

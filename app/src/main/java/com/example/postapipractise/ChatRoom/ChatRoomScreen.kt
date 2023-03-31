@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,9 +22,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.postapipractise.ChatWebSocket
+import com.example.postapipractise.WebSocket.ChatWebSocket
 import com.example.postapipractise.Login.ViewModel.LoadingView
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
 import com.example.postapipractise.Message.MessageDataClass
@@ -41,7 +39,7 @@ import retrofit2.Response
     "RememberReturnType"
 )
 @Composable
-fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,chatWebSocket:ChatWebSocket) {
+fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,chatWebSocket: ChatWebSocket) {
     val title = loginViewModel.user_name
     val ctx = LocalContext.current
     val result = remember {
@@ -51,17 +49,17 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
     val messageList = messageListState.value
     Text(text = messageList.size.toString())
 
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     if(loginViewModel.istyping.value&&loginViewModel.user_name.value!=loginViewModel.istypinguser.value){
-                        Text(text = " is typing")
+                        Text(text = "${loginViewModel.istypinguser.value} is typing")
                         loginViewModel.starttyping()
                     }
                     else{
-                    Text(text = if (loginViewModel.user_name.value=="user2") "" else "user2")
+                        println("##@$$$$#$$@@$%%%%%%${loginViewModel.istypinguser.value}")
+                    Text(text = if(loginViewModel.user_name.value == "Admin") "" else "Admin")
                     }
                 },
 
@@ -73,26 +71,6 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
             )
         }
     ){
-        if (loginViewModel.chatList.size == 0) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-//                    .height(500.dp)
-//                    .width(800.dp)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            listOf(Color.White, Purple500),
-                            startY = 1000f,
-                            endY = 4500f
-                        )
-                    ),
-                contentAlignment = Alignment.Center
-            ){
-                Text(text = "No Chat History",
-                    fontSize = 20.sp)
-            }
-
-        } else {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth(1f)
@@ -179,6 +157,12 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                                         Text(
                                             text = item.text, modifier = Modifier
                                                 .padding(8.dp)
+                                                .align(Alignment.End)
+                                        )
+                                        Text(
+                                            text = "$date-$month-$year",
+                                            modifier = Modifier.align(Alignment.End)
+                                                .padding(start = 8.dp, end = 8.dp, bottom = 4.dp)
                                         )
                                         Text(
                                             text = item.created.substring(12, 16),
@@ -196,7 +180,7 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
 
 
             }
-        }
+
 
     }
 
@@ -253,7 +237,7 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
     if (loginViewModel.isLoading.value == true){
         LoadingView()
     }
-        Text(text = result.value)
+//        Text(text = result.value)
     }
 
 

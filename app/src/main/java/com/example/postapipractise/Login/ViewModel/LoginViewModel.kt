@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -44,10 +45,12 @@ class LoginViewModel: ViewModel() {
     var user_name = mutableStateOf("")
     var password = mutableStateOf("")
 
+    var title by mutableStateOf("")
+
     val initial = LoginData("", "", false)
     var UserData: LoginData? by mutableStateOf(initial)
 
-    val initail2 = ChatRoomDataModel("",false, listOf("user2"))
+    val initail2 = ChatRoomDataModel("",false, listOf("Admin"))
     var chatData: ChatRoomDataModel? by mutableStateOf(initail2)
 
     var isLoading = mutableStateOf(false)
@@ -117,7 +120,19 @@ class LoginViewModel: ViewModel() {
     }
 }
 
+@Composable
+fun LoadingView() {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()
+            .padding(top = 500.dp)
+    ) {
+        CircularProgressIndicator(color = MaterialTheme.colors.primary)
+    }
+}
 
+
+/*
 @Composable
 fun LoadingView() {
     Box(
@@ -189,6 +204,7 @@ fun LoadingView() {
         }
     }
 }
+*/
 
 
 

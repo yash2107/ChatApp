@@ -1,5 +1,6 @@
 package com.example.postapipractise.Signup.Model.Network
 
+import com.example.postapipractise.Common.Constants
 import com.example.postapipractise.Signup.Model.DataModel.DataModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -20,11 +21,10 @@ interface RetrofitAPI {
         var retrofitAPI: RetrofitAPI?=null
         fun postInstance(): RetrofitAPI {
             if(retrofitAPI ==null){
-                val url = "https://api.chatengine.io/"
-                val privateKey = "64faa440-939e-4eba-948a-7146a70e7a5b"
+                val privateKey = Constants.privateKey
                 val okHttpClient = getOkhttpClient(privateKey)
                 retrofitAPI = Retrofit.Builder()
-                    .baseUrl(url)
+                    .baseUrl(Constants.url)
                     .client(okHttpClient)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build().create(RetrofitAPI::class.java)
@@ -46,7 +46,6 @@ interface RetrofitAPI {
                 .addInterceptor { chain ->
                     val request = chain.request().newBuilder()
                         .addHeader(headerKey, privateKey)
-                        //.addHeader("Accept", "application/json")
                         .build()
                     chain.proceed(request)
                 }

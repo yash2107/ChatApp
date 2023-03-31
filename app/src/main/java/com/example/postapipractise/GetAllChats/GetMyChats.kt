@@ -1,5 +1,6 @@
 package com.example.postapipractise.GetAllChats
 
+import com.example.postapipractise.Common.Constants
 import com.example.postapipractise.GetAllChats.ChatDataModel.GetChatsDataClass
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -24,7 +25,7 @@ class GetMyChatsClass(val username:String,val password:String){
             .addInterceptor(loggingInterceptor)
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
-                    .addHeader("Project-ID", "52690bdb-3b85-4b96-9081-27fa9b4dc10e")
+                    .addHeader("Project-ID", Constants.PROJECT_ID)
                     .addHeader("User-name", username)
                     .addHeader("User-Secret", password)
                     //.addHeader("Accept", "application/json")
@@ -34,7 +35,7 @@ class GetMyChatsClass(val username:String,val password:String){
             .build()
 
         val retrofit= Retrofit.Builder()
-            .baseUrl("https://api.chatengine.io/")
+            .baseUrl(Constants.url)
             .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build().create( GetMyChats::class.java)

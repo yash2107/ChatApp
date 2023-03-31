@@ -12,10 +12,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -27,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,6 +60,7 @@ fun SignupPostData(navController: NavController) {
     val response = remember {
         mutableStateOf("")
     }
+    var showPassword by remember { mutableStateOf(false) }
     // on below line we are creating a column.
     Box(
         modifier = Modifier.fillMaxSize().background(brush = Brush.verticalGradient(
@@ -162,14 +162,22 @@ fun SignupPostData(navController: NavController) {
                     leadingIcon = {
                         Icon(Icons.Default.Lock, contentDescription = "Password icon",tint = Purple700)
                     },
-                    visualTransformation = PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { showPassword = !showPassword }) {
+                            Icon(
+                                if (showPassword) Icons.Filled.Lock else Icons.Filled.Lock,
+                                contentDescription = if (showPassword) "Hide password" else "Show password"
+                            )
+                        }
+                    },
+                    visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         cursorColor = Purple700,
                         focusedBorderColor = Purple700,
                         unfocusedBorderColor = LightPurple
-                    )
+                    ),
                 )
                 // on below line we are adding spacer
                 Spacer(modifier = Modifier.height(10.dp))
@@ -194,7 +202,7 @@ fun SignupPostData(navController: NavController) {
                     )
                 ) {
                     // on below line we are adding text for our button
-                    Text(text = "Post Data", modifier = Modifier.padding(8.dp))
+                    Text(text = "SignUp")
                 }
                 // on below line we are adding a spacer.
                 Spacer(modifier = Modifier.height(20.dp))
@@ -223,8 +231,7 @@ private fun postDataUsingRetrofit(
     result: MutableState<String>
 ) {
     val retrofitAPI = RetrofitAPI.postInstance()
-    Toast.makeText(ctx,"I got Clicked",Toast.LENGTH_SHORT).show()
-    Log.d("MYTAG","Chala################################################################")
+    Log.d("MYTAG","Worked################################################################")
     val dataModel = DataModel(userName.value.text, firstName.value.text,lastName.value.text,password.value.text, email = "")
     // calling a method to create an update and passing our model class.
     val call: Call<DataModel?>? = retrofitAPI?.postData(dataModel)
@@ -232,7 +239,7 @@ private fun postDataUsingRetrofit(
     call!!.enqueue(object : Callback<DataModel?> {
         override fun onResponse(call: Call<DataModel?>?, response: Response<DataModel?>) {
             // this method is called when we get response from our api.
-            Toast.makeText(ctx, "Data posted to API", Toast.LENGTH_SHORT).show()
+            Toast.makeText(ctx, "User Signed Up", Toast.LENGTH_SHORT).show()
             // we are getting a response from our body and
             // passing it to our model class.
             val model: DataModel? = response.body()

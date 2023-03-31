@@ -1,7 +1,8 @@
-package com.example.postapipractise
+package com.example.postapipractise.WebSocket
 
 
 import android.util.Log
+import com.example.postapipractise.Common.Constants
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
 import com.example.postapipractise.Message.ReceiveMessage.ReceiveDataClass
 import com.google.gson.Gson
@@ -62,7 +63,7 @@ class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListene
             Log.d("MYTAG", "WebSocket failure: Broken pipe")
             // Reconnect the WebSocket here
             val request = Request.Builder()
-                .url("wss://api.chatengine.io/chat/?projectID=52690bdb-3b85-4b96-9081-27fa9b4dc10e&chatID=${loginViewModel.chatId}&accessKey=${loginViewModel.accesskey}")
+                .url("wss://api.chatengine.io/chat/?projectID=${Constants.PROJECT_ID}=${loginViewModel.chatId}&accessKey=${loginViewModel.accesskey}")
                 .build()
             val client = OkHttpClient()
             this.webSocket = client.newWebSocket(request, this)
@@ -74,7 +75,6 @@ class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListene
     fun sendMessage(message: String) {
         webSocket.send(message)
     }
-
 
     fun closeWebSocket() {
         webSocket.close(1000, "Closing WebSocket.")
