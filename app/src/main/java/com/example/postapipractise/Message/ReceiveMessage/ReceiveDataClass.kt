@@ -1,7 +1,5 @@
 package com.example.postapipractise.Message.ReceiveMessage
 
-import com.example.postapipractise.Message.MessageDataClass
-
 data class ReceiveDataClass(
 
     var text:String,

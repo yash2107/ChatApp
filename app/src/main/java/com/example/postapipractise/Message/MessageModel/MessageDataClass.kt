@@ -1,4 +1,4 @@
-package com.example.postapipractise.Message
+package com.example.postapipractise.Message.MessageModel
 
 data class MessageDataClass(
     val text:String,

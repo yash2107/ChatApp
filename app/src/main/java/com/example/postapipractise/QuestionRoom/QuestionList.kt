@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.postapipractise.ChatRoom.getChatHistory
+import com.example.postapipractise.ChatRoom.ChatHistory.getChatHistory
 import com.example.postapipractise.ChatRoom.postChatRoom
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
 import com.example.postapipractise.Navigation.NavigationId
@@ -44,7 +44,7 @@ fun QuestionList(questionViewModel: QuestionViewModel,loginViewModel: LoginViewM
     }
     val scaffoldState = rememberScaffoldState()
     val result = remember { mutableStateOf("") }
-    var isTalkToAgentVisible by remember { mutableStateOf(false) }
+//    var isTalkToAgentVisible by remember { mutableStateOf(false) }
 
 
 
@@ -67,7 +67,7 @@ fun QuestionList(questionViewModel: QuestionViewModel,loginViewModel: LoginViewM
             FloatingActionButton(
                 onClick = {
                     postChatRoom(ctx, title, result, loginViewModel, navController)
-                    getChatHistory(loginViewModel)
+//                    getChatHistory(loginViewModel)
                 }
             ) {
                 Icon(Icons.Filled.Person, contentDescription = "")

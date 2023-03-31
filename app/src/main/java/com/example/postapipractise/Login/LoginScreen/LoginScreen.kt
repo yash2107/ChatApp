@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.postapipractise.ChatRoom.getChatHistory
+import com.example.postapipractise.ChatRoom.ChatHistory.getChatHistory
 import com.example.postapipractise.Login.LoginDataClass.LoginData
 import com.example.postapipractise.Login.LoginState
 import com.example.postapipractise.Login.ViewModel.*
@@ -58,14 +58,14 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,share
     val ctx = LocalContext.current
 
     //Enable Shared Prefrences
-    val email = sharedPreferences.getString("USERNAME", "").toString()
+    val un = sharedPreferences.getString("USERNAME", "").toString()
     val secrett = sharedPreferences.getString("SECRET", "").toString()
 
-
-    if (email.isNotBlank()){
-        loginViewModel.user_name.value = email
+    if (un.isNotBlank()){
+        loginViewModel.user_name.value = un
         loginViewModel.password.value = secrett
-        getDetails(ctx,email,secrett,result,secret,navController,loginViewModel,sharedPreferences)
+//        navController.navigate(NavigationId.History.route)
+        getDetails(ctx,un,secrett,result,secret,navController,loginViewModel,sharedPreferences)
     }
     else{
         Box(
@@ -204,6 +204,7 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,share
 
 
 private fun getDetails(
+    /*Function to authenticate user and retrieve user details from API using Retrofit library and update viewmodel and shared preferences accordingly.*/
     ctx: Context,
     Username:String,
     Password:String,
@@ -227,7 +228,8 @@ private fun getDetails(
                 "Response Code : " + response.code() + "\n"+"Id: " + model?.is_authenticated+  "\n"+ model?.username
             result.value = resp
             secret.value = model?.secret.toString()
-            loginViewModel.UserData=model
+            loginViewModel.UserData=model // Set the user data in the ViewModel
+            /*Check if user is authenticated, navigate to History screen if true, else show toast message and set isLoading to false.*/
             if(model?.is_authenticated==true){
                 navController.navigate(NavigationId.History.route)
                 Toast.makeText(ctx,"Logged in Correctly",Toast.LENGTH_SHORT).show()

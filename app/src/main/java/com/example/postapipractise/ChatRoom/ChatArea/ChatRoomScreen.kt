@@ -2,6 +2,7 @@ package com.example.postapipractise.ChatRoom
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -26,7 +27,7 @@ import androidx.navigation.NavController
 import com.example.postapipractise.WebSocket.ChatWebSocket
 import com.example.postapipractise.Login.ViewModel.LoadingView
 import com.example.postapipractise.Login.ViewModel.LoginViewModel
-import com.example.postapipractise.Message.MessageDataClass
+import com.example.postapipractise.Message.MessageModel.MessageDataClass
 import com.example.postapipractise.TypingStatus.TypingModel
 import com.example.postapipractise.ui.theme.Purple500
 import com.example.postapipractise.ui.theme.senderColor
@@ -40,7 +41,7 @@ import retrofit2.Response
 )
 @Composable
 fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,chatWebSocket: ChatWebSocket) {
-    val title = loginViewModel.user_name
+//    val title = loginViewModel.user_name
     val ctx = LocalContext.current
     val result = remember {
         mutableStateOf("")
@@ -48,6 +49,10 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
     val messageListState = loginViewModel.messageList.collectAsState()
     val messageList = messageListState.value
     Text(text = messageList.size.toString())
+
+    var textFieldValue by remember { mutableStateOf("") }
+    val isTextFieldEmpty = textFieldValue.isEmpty()
+
 
     Scaffold(
         topBar = {
@@ -71,10 +76,12 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
             )
         }
     ){
+        if (loginViewModel.chatList.size!=0){
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth(1f)
+                    .fillMaxWidth()
                     .fillMaxHeight(0.9f)
+//                .padding(bottom=0.dp)
                     .background(
                         brush = Brush.verticalGradient(
                             listOf(Color.White, Purple500),
@@ -97,7 +104,8 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                                 modifier = Modifier.padding(
                                     start = 40.dp,
                                     top = 8.dp,
-                                    end = 8.dp
+                                    end = 8.dp,
+                                    bottom = 35.dp
                                 )
                             ) {
                                 Card(
@@ -108,8 +116,8 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
 
                                     ) {
                                     Column(
-//                                        Modifier.fillMaxWidth(),
-//                                        horizontalAlignment = Alignment.End
+//                                     Modifier.fillMaxWidth(),
+                                        // horizontalAlignment = Alignment.End
                                     ) {
                                         Text(
                                             text = item.text,
@@ -119,7 +127,8 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                                         )
                                         Text(
                                             text = "$date-$month-$year",
-                                            modifier = Modifier.align(Alignment.End)
+                                            modifier = Modifier
+                                                .align(Alignment.End)
                                                 .padding(start = 8.dp, end = 8.dp, bottom = 4.dp)
                                         )
                                         Text(
@@ -144,7 +153,8 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                                 modifier = Modifier.padding(
                                     start = 10.dp,
                                     top = 8.dp,
-                                    end = 8.dp
+                                    end = 8.dp,
+                                    bottom = 35.dp
                                 )
                             ) {
                                 Card(
@@ -161,7 +171,8 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                                         )
                                         Text(
                                             text = "$date-$month-$year",
-                                            modifier = Modifier.align(Alignment.End)
+                                            modifier = Modifier
+                                                .align(Alignment.End)
                                                 .padding(start = 8.dp, end = 8.dp, bottom = 4.dp)
                                         )
                                         Text(
@@ -177,63 +188,53 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
                         }
                     }
                 }
-
-
             }
+        }
+        else{
+            Text(text = "No Previous Chat")
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 10.dp),
+            verticalAlignment = Alignment.Bottom
+        ) {
+            OutlinedTextField(
+                value = textFieldValue,
+                maxLines = 2,
+                onValueChange = { newValue ->
+                    textFieldValue = newValue
+                    IsTypingHelpingFunction(ctx,loginViewModel)
+                },
+                modifier = Modifier.weight(1f),
+                placeholder = { Text(text = "Type Your Message Here") }
+            )
+            IconButton(
+                onClick = {
+                    chatWebSocket.sendMessage(textFieldValue)
+                    postSenderMessage(
+                        ctx,
+//                        title.value,
+                        textFieldValue,
+                        result,
+                        loginViewModel
+                    )
+                    textFieldValue = ""
+//                        println( "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ChatRoomScreen: ${loginViewModel.chatList[loginViewModel.chatList.size-1]} ")
+                },
+                enabled = !isTextFieldEmpty
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Send,
+                    contentDescription = "",
+                    tint = if (isTextFieldEmpty) Color.Gray else Color.Blue // Change the icon color based on whether the text field is empty or not
+                )
+            }
+        }
 
 
     }
-
-        var textFieldValue by remember { mutableStateOf("") }
-        val isTextFieldEmpty = textFieldValue.isEmpty()
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .height(1.dp)
-                .padding(bottom = 16.dp),
-            contentAlignment = Alignment.BottomCenter
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedTextField(
-
-                    value = textFieldValue,
-                    maxLines = 2,
-                    onValueChange = { newValue ->
-                        textFieldValue = newValue
-                        IsTypingHelpingFunction(ctx,loginViewModel)
-                    },
-                    modifier = Modifier.weight(1f),
-                    placeholder = { Text(text = "Type Your Message Here") }
-                )
-                IconButton(
-                    onClick = {
-                        chatWebSocket.sendMessage(textFieldValue)
-                        postSenderMessage(
-                            ctx,
-                            title.value,
-                            textFieldValue,
-                            result,
-                            loginViewModel
-                        )
-                        textFieldValue = ""
-//                        println( "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ChatRoomScreen: ${loginViewModel.chatList[loginViewModel.chatList.size-1]} ")
-                    },
-                    enabled = !isTextFieldEmpty
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Send,
-                        contentDescription = "",
-                        tint = if (isTextFieldEmpty) Color.Gray else Color.Blue // Change the icon color based on whether the text field is empty or not
-                    )
-                }
-            }
-        }
     if (loginViewModel.isLoading.value == true){
         LoadingView()
     }
@@ -244,7 +245,7 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
 
 private fun postSenderMessage(
     ctx: Context,
-    title:String,
+//    title:String,
     txt:String,
 //    created: MutableState<String>,
     result: MutableState<String>,

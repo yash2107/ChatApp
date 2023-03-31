@@ -1,7 +1,8 @@
 package com.example.postapipractise.Message.SendMessage
 
 
-import com.example.postapipractise.Message.MessageDataClass
+import com.example.postapipractise.Common.Constants
+import com.example.postapipractise.Message.MessageModel.MessageDataClass
 import com.example.postapipractise.Message.ReceiveMessage.ReceiveDataClass
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -21,11 +22,7 @@ interface MessageApi {
     fun postMessage(@Body messageDataClass: MessageDataClass?): Call<MessageDataClass?>?
 }
 
-class MessageClass(username:String,password:String,val chatId:Int){
-
-    var username=username
-    var password=password
-
+class MessageClass(var username:String,var password:String,val chatId:Int){
 
     fun MessageInstance(): MessageApi {
         val loggingInterceptor= HttpLoggingInterceptor()
@@ -37,7 +34,7 @@ class MessageClass(username:String,password:String,val chatId:Int){
             .addInterceptor(loggingInterceptor)
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
-                    .addHeader("Project-ID", "52690bdb-3b85-4b96-9081-27fa9b4dc10e")
+                    .addHeader("Project-ID", Constants.PROJECT_ID)
                     .addHeader("User-Name", username)
                     .addHeader("User-Secret", password)
                     //.addHeader("Accept", "application/json")

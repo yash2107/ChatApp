@@ -10,14 +10,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 
 interface GetMyChats {
-
+    // Interface defining the REST API endpoint to get chats for the logged-in user.
     @GET("/chats")
     fun getChats(): Call<List<GetChatsDataClass>?>?
 }
 
 class GetMyChatsClass(val username:String,val password:String){
+   /* Class representing an instance of the GetMyChats interface that takes in a username and password for authentication.*/
 
     fun getMsgInstance(): GetMyChats {
+        /* The getMsgInstance() function returns an instance of the GetMyChats interface created using OkHttpClient, Retrofit, and Gson.*/
         val loggingInterceptor= HttpLoggingInterceptor()
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
 
@@ -41,5 +43,6 @@ class GetMyChatsClass(val username:String,val password:String){
             .build().create( GetMyChats::class.java)
 
         return  retrofit!!
+
     }
 }

@@ -15,7 +15,7 @@ import java.net.SocketException
 class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListener(){
     private var webSocket: WebSocket
     init {
-        val request = Request.Builder().url("wss://api.chatengine.io/chat/?projectID=52690bdb-3b85-4b96-9081-27fa9b4dc10e&chatID=${loginViewModel.chatId}&accessKey=${loginViewModel.accesskey}").build()
+        val request = Request.Builder().url("wss://api.chatengine.io/chat/?projectID=${Constants.PROJECT_ID}&chatID=${loginViewModel.chatId}&accessKey=${loginViewModel.accesskey}").build()
         val client = OkHttpClient()
         webSocket = client.newWebSocket(request, this)
     }
@@ -69,7 +69,6 @@ class ChatWebSocket(private val loginViewModel: LoginViewModel):WebSocketListene
             this.webSocket = client.newWebSocket(request, this)
         }
         else{Log.d("MYTAG", "WebSocket failure.", t)}
-
     }
 
     fun sendMessage(message: String) {
