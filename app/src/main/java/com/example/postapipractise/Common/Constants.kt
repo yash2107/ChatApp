@@ -1,8 +1,8 @@
 package com.example.postapipractise.Common
 
 object Constants {
-    const val PROJECT_ID = "52690bdb-3b85-4b96-9081-27fa9b4dc10e"
-    const val SECRET_KEY = "your-secret-key"
+    const val PROJECT_ID = "73f6f228-2dff-46e4-9d75-30440a3b2586"
     const val url = "https://api.chatengine.io/"
-    const val privateKey = "64faa440-939e-4eba-948a-7146a70e7a5b"
+    const val privateKey = "ee27246e-28c3-4156-954d-dddba04a4fd8"
+    const val Admin = "Admin"
 }

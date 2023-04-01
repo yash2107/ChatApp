@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,12 +61,12 @@ fun ChatRoomScreen(navController: NavController,loginViewModel: LoginViewModel,c
             TopAppBar(
                 title = {
                     if(loginViewModel.istyping.value&&loginViewModel.user_name.value!=loginViewModel.istypinguser.value){
-                        Text(text = "${loginViewModel.istypinguser.value} is typing")
+                        Text(text = "${loginViewModel.istypinguser.value} is typing..", fontStyle = FontStyle.Italic)
                         loginViewModel.starttyping()
                     }
                     else{
                         println("##@$$$$#$$@@$%%%%%%${loginViewModel.istypinguser.value}")
-                    Text(text = if(loginViewModel.user_name.value == "Admin") "" else "Admin")
+                    Text(text = if(loginViewModel.user_name.value == "Admin") " " else "Admin")
                     }
                 },
 
