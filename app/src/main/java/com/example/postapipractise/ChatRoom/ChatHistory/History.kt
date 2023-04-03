@@ -56,14 +56,22 @@ import retrofit2.Response
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "SuspiciousIndentation")
 @Composable
-fun History(navController: NavController, loginViewModel: LoginViewModel,sharedPreferences: SharedPreferences,questionViewModel: QuestionViewModel) {
+fun History(navController: NavController, loginViewModel: LoginViewModel,sharedPreferences: SharedPreferences) {
     val ctx = LocalContext.current
     val title = loginViewModel.user_name
     val scaffoldState = rememberScaffoldState()
     val result = remember { mutableStateOf("") }
     val resultResponse = remember { mutableStateOf("") }
     val editor: SharedPreferences.Editor = sharedPreferences.edit()
+
+
     getChatHistory(loginViewModel)
+
+    //Enable Shared Prefrences
+    editor.putString("USERNAME", loginViewModel.user_name.value)
+    editor.putString("SECRET",loginViewModel.password.value)
+    editor.apply()
+
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {

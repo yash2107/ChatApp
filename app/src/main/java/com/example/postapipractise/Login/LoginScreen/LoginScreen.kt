@@ -3,9 +3,7 @@ package com.example.postapipractise.Login.LoginScreen
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -29,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.postapipractise.ChatRoom.ChatHistory.getChatHistory
+import com.example.postapipractise.ChatRoom.History
 import com.example.postapipractise.Login.LoginDataClass.LoginData
 import com.example.postapipractise.Login.LoginState
 import com.example.postapipractise.Login.ViewModel.*
@@ -54,7 +53,6 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,share
 
     val isFieldsFilled = Username.value.isNotBlank() && Password.value.isNotBlank()
 
-//    var loginState by remember { mutableStateOf<LoginState>(LoginState.Loading) }xl
     val ctx = LocalContext.current
 
     //Enable Shared Prefrences
@@ -64,8 +62,9 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,share
     if (un.isNotBlank()){
         loginViewModel.user_name.value = un
         loginViewModel.password.value = secrett
+        History(navController, loginViewModel, sharedPreferences)
 //        navController.navigate(NavigationId.History.route)
-        getDetails(ctx,un,secrett,result,secret,navController,loginViewModel,sharedPreferences)
+//        getDetails(ctx,un,secrett,result,secret,navController,loginViewModel,sharedPreferences)
     }
     else{
         Box(
@@ -85,7 +84,7 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,share
             Card (modifier = Modifier
                 .fillMaxWidth()
                 .height(700.dp)
-
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp),
                 backgroundColor = LightPurple,
                 shape = RoundedCornerShape(50.dp),
@@ -205,7 +204,8 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,share
 
 
 private fun getDetails(
-    /*Function to authenticate user and retrieve user details from API using Retrofit library and update viewmodel and shared preferences accordingly.*/
+    /*Function to authenticate user and retrieve user details from API using Retrofit library and
+     update viewmodel and shared preferences accordingly.*/
     ctx: Context,
     Username:String,
     Password:String,
@@ -218,10 +218,8 @@ private fun getDetails(
     val authenticationApi = loginViewModel.AuthenticateUser()
 
     val call: Call<LoginData?>? = authenticationApi.getUsers()
-
-    val editor: SharedPreferences.Editor = sharedPreferences.edit()
+//    val editor: SharedPreferences.Editor = sharedPreferences.edit()
     call!!.enqueue(object : Callback<LoginData?> {
-
         override fun onResponse(call: Call<LoginData?>?, response: Response<LoginData?>) {
 //            Toast.makeText(ctx, "Logged in", Toast.LENGTH_SHORT).show()
             val model: LoginData? = response.body()
@@ -241,18 +239,17 @@ private fun getDetails(
             }
             loginViewModel.isLoading.value = false
             println("/////////////////////////////////////////////////////${secret.value}")
-            if (response.isSuccessful){
+            /*if (response.isSuccessful){
                 getChatHistory(loginViewModel)
                 editor.putString("USERNAME", Username)
                 editor.putString("SECRET", Password)
                 editor.apply()
-            }
+            }*/
         }
         override fun onFailure(call: Call<LoginData?>?, t: Throwable) {
             result.value ="error "+t.message
         }
     })
-
 }
 
 

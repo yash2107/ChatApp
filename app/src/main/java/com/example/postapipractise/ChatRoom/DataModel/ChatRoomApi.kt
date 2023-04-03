@@ -2,6 +2,7 @@ package com.example.postapipractise.ChatRoom.DataModel
 
 
 import com.example.postapipractise.Common.Constants
+import com.example.postapipractise.Common.Constants.url
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -22,7 +23,6 @@ class ChatRoomClass(var username:String,var password:String){
         // The postInstance() function returns a ChatRoomApi instance created using OkHttpClient, Retrofit, and Gson.
         val loggingInterceptor= HttpLoggingInterceptor()
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val url = "https://api.chatengine.io/"
 
         val httpClient= OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)

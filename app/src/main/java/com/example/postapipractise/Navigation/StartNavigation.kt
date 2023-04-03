@@ -45,7 +45,7 @@ fun StartNavigation(sharedPreferences: SharedPreferences,navController: NavHostC
             SignUpScaff(navController)
         }
         composable(NavigationId.History.route){
-            History(navController,loginViewModel,sharedPreferences,questionViewModel)
+            History(navController,loginViewModel,sharedPreferences)
         }
         composable(NavigationId.ChatRoomScreen.route){
             ChatRoomScreen( navController,loginViewModel,chatWebSocket)

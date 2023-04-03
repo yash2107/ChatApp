@@ -18,11 +18,7 @@ fun getChatHistory(
         override fun onResponse(call: Call<List<GetChatsDataClass>?>, response: Response<List<GetChatsDataClass>?>) {
             //Toast.makeText(context, "Logged in", Toast.LENGTH_SHORT).show()
             val model: List<GetChatsDataClass> = response.body()?: emptyList()
-            if (model.isNotEmpty()) {
-                loginViewModel.allChats = model as MutableList<GetChatsDataClass>
-            }
-
-
+            loginViewModel.allChats = model as MutableList<GetChatsDataClass>
         }
         override fun onFailure(call: Call<List<GetChatsDataClass>?>, t: Throwable) {
 
