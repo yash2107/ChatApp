@@ -195,10 +195,9 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
 
                     }
                 }
+
             }
-            if (loginViewModel.isLoading.value == true) {
-                LoadingView()
-            }
+
         }
         else{
             Box(
@@ -213,11 +212,14 @@ fun History(navController: NavController, loginViewModel: LoginViewModel,sharedP
             ){
                 Text(text = "No Chats Available",
                     fontSize = 20.sp)
-                if (loginViewModel.isLoading.value == true) {
-                    LoadingView()
-                }
+//                if (loginViewModel.isLoading.value == true) {
+//                    LoadingView()
+//                }
             }
         }
+    }
+    if (loginViewModel.isLoading.value == true) {
+        LoadingView()
     }
 }
 

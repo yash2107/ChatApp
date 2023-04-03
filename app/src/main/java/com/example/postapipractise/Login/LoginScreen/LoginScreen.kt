@@ -60,6 +60,7 @@ fun LoginScreen(navController:NavController,loginViewModel: LoginViewModel,share
     val secrett = sharedPreferences.getString("SECRET", "").toString()
 
     if (un.isNotBlank()){
+        loginViewModel.isLoading.value = true
         loginViewModel.user_name.value = un
         loginViewModel.password.value = secrett
         History(navController, loginViewModel, sharedPreferences)

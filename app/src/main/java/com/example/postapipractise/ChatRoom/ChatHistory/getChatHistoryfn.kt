@@ -21,6 +21,7 @@ fun getChatHistory(
             if (model.isNotEmpty()){
                 loginViewModel.allChats = model as MutableList<GetChatsDataClass>
             }
+            loginViewModel.isLoading.value = false
         }
         override fun onFailure(call: Call<List<GetChatsDataClass>?>, t: Throwable) {
 
